@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface RentRepository extends JpaRepository<Rent, Long> {
     List<Rent> findByRentStatus(Rent.RentStatus rentStatus);
+    List<Rent> findByCarAgencyId(Long agencyId);
 }
