@@ -1,0 +1,116 @@
+.hero-banner {
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px;
+    color: #333;
+}
+.search-section {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+}
+.search-section .title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-section .title span{
+    font-size: small;
+}
+.search-section h2 {
+    margin-bottom: 5px;
+}
+.search-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.location-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.date-time {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;;
+}
+.date-input {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.date-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+input:focus {
+    outline: none;
+    border-color: none;
+}
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.search-button {
+    background-color: #f0c040;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.search-button:hover {
+    background-color: #d89b30;
+}
+.pupular-brands {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+.pupular-brands h2 {
+    font-weight: 400;
+    margin-top: 10px;
+}
+.car-logos {
+    display: flex;
+    overflow-x: auto;
+    gap: 40px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.car-logo-container{
+    border: 1px solid #e0e0e0;
+    height: 150px;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.car-logo-container:hover {
+    border: 2px solid #afabab;
+}
+.car-logo-container .car-logo:hover{
+    transform: scale(1.1);
+    transition: all 0.2s ease-in-out;
+}
+.car-logo {
+    height: 120px;
+    width: 120px;
+    object-fit: contain;
+    cursor: pointer;
+}

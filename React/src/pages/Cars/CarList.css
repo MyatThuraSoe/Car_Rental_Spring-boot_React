@@ -1,0 +1,90 @@
+.car-list {
+  max-width: 1200px;
+  margin: 15px auto;
+  
+  /* padding: 10px; */
+}
+
+.car-cards {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  
+}
+
+.car-cards .car-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  text-align: left;
+}
+
+.car-card:hover{
+  transform: scale(1.04);
+  transition: all 0.3s ease-in-out;
+}
+
+.car-card .car-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.car-info {
+  margin-top: 10px;
+}
+
+.car-info h3 {
+  margin: 5px 0;
+}
+
+.car-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: #f0f0f0;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (min-width: 770px) and (max-width: 1100px){
+  .car-cards {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (max-width: 769px) and (min-width: 400px){
+  .car-cards {
+    grid-template-columns: 1fr; 
+  }
+  .car-list {
+    margin: 0 5px;
+  }
+}
