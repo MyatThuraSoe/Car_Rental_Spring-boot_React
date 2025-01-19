@@ -2,7 +2,11 @@ package com.mzp.carrental.service;
 
 import com.mzp.carrental.dto.ReqRes;
 import com.mzp.carrental.entity.OurUsers;
+import com.mzp.carrental.entity.Users.Agency;
+import com.mzp.carrental.entity.Users.Customer;
+import com.mzp.carrental.repository.Customer.CustomerRepo;
 import com.mzp.carrental.repository.UsersRepo;
+import com.mzp.carrental.repository.agency.AgencyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +29,11 @@ public class UsersManagementService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AgencyRepo agencyRepo;
+    @Autowired
+    private CustomerRepo customerRepo;
+
 
     public ReqRes register(ReqRes registrationRequest){
         ReqRes resp = new ReqRes();
@@ -33,14 +42,30 @@ public class UsersManagementService {
             OurUsers ourUser = new OurUsers();
             ourUser.setEmail(registrationRequest.getEmail());
             ourUser.setRole(registrationRequest.getRole());
-            ourUser.setName(registrationRequest.getName());
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             OurUsers ourUsersResult = usersRepo.save(ourUser);
-            if (ourUsersResult.getId()>0) {
-                resp.setOurUsers((ourUsersResult));
+            System.out.println("Inside usermanagementservice register");
+            System.out.println("The registered user is "+ ourUsersResult.getRole());
+            if (ourUsersResult.getId() > 0) {
+                if ("Agency".equalsIgnoreCase(ourUsersResult.getRole())) {
+                    Agency agency = new Agency();
+                    agency.setOurUsers(ourUsersResult);
+                    System.out.println("Now inside agency create");
+                    // Set other Agency fields if available from registrationRequest
+                    agencyRepo.save(agency);
+                } else if ("Customer".equalsIgnoreCase(ourUsersResult.getRole())) {
+                    Customer customer = new Customer();
+                    customer.setOurUsers(ourUsersResult);
+                    System.out.println("Now inside customer create ");
+                    // Set other Customer fields if available from registrationRequest
+                    customerRepo.save(customer);
+                }
+
+                resp.setOurUsers(ourUsersResult);
                 resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
             }
+
 
         }catch (Exception e){
             resp.setStatusCode(500);
@@ -62,9 +87,13 @@ public class UsersManagementService {
             response.setStatusCode(200);
             response.setToken(jwt);
             response.setRole(user.getRole());
+            response.setId(user.getId());
+            response.setEmail(user.getEmail());
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMessage("Successfully Logged In");
+
+            System.out.println(response.toString());
 
         }catch (Exception e){
             response.setStatusCode(500);
@@ -164,7 +193,6 @@ public class UsersManagementService {
             if (userOptional.isPresent()) {
                 OurUsers existingUser = userOptional.get();
                 existingUser.setEmail(updatedUser.getEmail());
-                existingUser.setName(updatedUser.getName());
                 existingUser.setRole(updatedUser.getRole());
 
                 // Check if password is present in the request
@@ -217,7 +245,6 @@ public class UsersManagementService {
             OurUsers ourUser = new OurUsers();
             ourUser.setEmail(registrationRequest.getEmail());
             ourUser.setRole("admin");
-            ourUser.setName("Admin 1");
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             OurUsers ourUsersResult = usersRepo.save(ourUser);
             if (ourUsersResult.getId()>0) {
@@ -231,5 +258,26 @@ public class UsersManagementService {
             resp.setError(e.getMessage());
         }
         return resp;
+    }
+
+    public ReqRes updateName(Integer userId, String name) {
+        ReqRes reqRes = new ReqRes();
+        try {
+            Optional<OurUsers> userOptional = usersRepo.findById(userId);
+            if (userOptional.isPresent()) {
+                OurUsers existingUser = userOptional.get();
+                OurUsers savedUser = usersRepo.save(existingUser);
+                reqRes.setOurUsers(savedUser);
+                reqRes.setStatusCode(200);
+                reqRes.setMessage("User updated successfully");
+            } else {
+                reqRes.setStatusCode(404);
+                reqRes.setMessage("User not found for update");
+            }
+        } catch (Exception e) {
+            reqRes.setStatusCode(500);
+            reqRes.setMessage("Error occurred while updating user: " + e.getMessage());
+        }
+        return reqRes;
     }
 }

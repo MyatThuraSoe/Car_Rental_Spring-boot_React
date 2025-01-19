@@ -1,5 +1,6 @@
 package com.mzp.carrental.entity.Users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mzp.carrental.entity.OurUsers;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,32 +10,33 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Data
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String username;
 
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId // This maps the id of Agency to the id of OurUsers
     @JoinColumn(name = "ourusers_id", nullable = false)
+    @JsonIgnore
     private OurUsers ourUsers;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String drivingLiscene;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String phoneNumber;
 
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String city;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -81,5 +83,14 @@ public class Customer {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", city='" + city + '\'' +
                 '}';
+    }
+
+    // Add this method if it's not already present
+    public void setOurUsers(OurUsers ourUsers) {
+        this.ourUsers = ourUsers;
+    }
+
+    public OurUsers getOurUsers() {
+        return ourUsers;
     }
 }

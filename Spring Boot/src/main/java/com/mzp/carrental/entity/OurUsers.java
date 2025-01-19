@@ -19,7 +19,6 @@ public class OurUsers implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String email;
-    private String name;
     private String password;
     private String role;
 
@@ -75,13 +74,6 @@ public class OurUsers implements UserDetails {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public void setPassword(String password) {
         this.password = password;

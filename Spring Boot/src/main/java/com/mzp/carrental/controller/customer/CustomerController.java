@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/customer")
 public class CustomerController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class CustomerController {
 
     // Get a specific customer by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<Customer> getCustomerById(@PathVariable Integer id) {
         Customer customer = customerService.getCustomerById(id);
         return customer != null
                 ? ResponseEntity.ok(customer)
@@ -43,7 +43,7 @@ public class CustomerController {
 
     // Update an existing customer
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
         Customer updatedCustomer = customerService.updateCustomer(id, customer);
         return updatedCustomer != null
                 ? ResponseEntity.ok(updatedCustomer)
@@ -52,7 +52,7 @@ public class CustomerController {
 
     // Delete a customer
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Integer id) {
         boolean isDeleted = customerService.deleteCustomer(id);
         return isDeleted
                 ? ResponseEntity.noContent().build()

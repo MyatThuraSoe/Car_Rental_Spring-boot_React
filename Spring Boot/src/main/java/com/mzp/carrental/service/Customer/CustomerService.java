@@ -23,7 +23,7 @@ public class CustomerService {
     }
 
     // Get a customer by ID
-    public Customer getCustomerById(Long id) {
+    public Customer getCustomerById(Integer id) {
         return customerRepo.findById(id).orElse(null);
     }
 
@@ -33,7 +33,7 @@ public class CustomerService {
     }
 
     // Update an existing customer
-    public Customer updateCustomer(Long id, Customer customerDetails) {
+    public Customer updateCustomer(Integer id, Customer customerDetails) {
         return customerRepo.findById(id)
                 .map(existingCustomer -> {
                     existingCustomer.setUsername(customerDetails.getUsername());
@@ -45,7 +45,7 @@ public class CustomerService {
     }
 
     // Delete a customer
-    public boolean deleteCustomer(Long id) {
+    public boolean deleteCustomer(Integer id) {
         if (customerRepo.existsById(id)) {
             customerRepo.deleteById(id);
             return true;

@@ -1,10 +1,9 @@
 package com.mzp.carrental.entity.Cars;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mzp.carrental.entity.Users.Agency;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.List;
 
 @Entity
 @Data
@@ -13,8 +12,9 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false) // Lazy fetch for performance, agency is mandatory
-    @JoinColumn(name = "agency_id", nullable = false) // Foreign key column in the Car table
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "agency_id", nullable = false)
+    @JsonBackReference // Avoids circular reference
     private Agency agency;
 
     @Column(nullable = false)
@@ -23,10 +23,10 @@ public class Car {
     @Column(nullable = false)
     private String model;
 
-    @ElementCollection
-    @CollectionTable(name = "car_images", joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "image_url")
-    private List<String> imageUrls;
+    private String imageName;
+    private String imageType;
+    @Lob
+    private byte[] imageData;
 
     @Column(nullable = false, unique = true)
     private String licensePlate;
@@ -58,16 +58,18 @@ public class Car {
     @Column(nullable = false)
     private int seats;
 
-    @ElementCollection
-    @CollectionTable(name = "car_features", joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "feature")
-    private List<String> features;
+
+    @Column(nullable = true)
+    private String features;
 
     @Column(length = 1000)
     private String description;
 
     @Column(nullable = false)
     private double pricePerDay;
+
+    @Column(nullable = false)
+    private double driverFeePerDay;
 
     public enum Category {
         SUV, HATCHBACK, SEDAN, COUPE, CONVERTIBLE, TRUCK, VAN, OTHER
@@ -124,13 +126,6 @@ public class Car {
         this.model = model;
     }
 
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
-    }
 
     public String getLicensePlate() {
         return licensePlate;
@@ -196,11 +191,11 @@ public class Car {
         this.transmission = transmission;
     }
 
-    public List<String> getFeatures() {
+    public String getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<String> features) {
+    public void setFeatures(String features) {
         this.features = features;
     }
 
@@ -224,22 +219,49 @@ public class Car {
     public String toString() {
         return "Car{" +
                 "id=" + id +
-                ", agency=" + agency +
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
-                ", imageUrls=" + imageUrls +
                 ", licensePlate='" + licensePlate + '\'' +
                 ", year=" + year +
-                ", vin='" + vin + '\'' +
-                ", mileage=" + mileage +
                 ", color='" + color + '\'' +
                 ", category=" + category +
                 ", fuelType=" + fuelType +
                 ", transmission=" + transmission +
                 ", seats=" + seats +
-                ", features=" + features +
-                ", description='" + description + '\'' +
                 ", pricePerDay=" + pricePerDay +
-                '}';
+                ", description='" + description + '\'' +
+                '}'; // Excluding 'agency' to prevent recursion
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    public double getDriverFeePerDay() {
+        return driverFeePerDay;
+    }
+
+    public void setDriverFeePerDay(double driverFeePerDay) {
+        this.driverFeePerDay = driverFeePerDay;
     }
 }

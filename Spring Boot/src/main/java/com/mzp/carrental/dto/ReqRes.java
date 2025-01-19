@@ -19,8 +19,8 @@ public class ReqRes {
     private String token;
     private String refreshToken;
     private String expirationTime;
-    private String name;
     private String role;
+    private Integer id;
     private String email;
     private String password;
     private OurUsers ourUsers;
@@ -75,14 +75,6 @@ public class ReqRes {
         this.expirationTime = expirationTime;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getRole() {
         return role;
     }
@@ -121,5 +113,27 @@ public class ReqRes {
 
     public void setOurUsersList(List<OurUsers> ourUsersList) {
         this.ourUsersList = ourUsersList;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "ReqRes{" +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", id='" + id + '\'' +
+                ", expirationTime='" + expirationTime + '\'' +
+                ", refreshToken='" + refreshToken + '\'' +
+                ", token='" + token + '\'' +
+                ", message='" + message + '\'' +
+                ", statusCode=" + statusCode +
+                '}';
     }
 }

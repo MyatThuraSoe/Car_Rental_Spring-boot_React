@@ -61,6 +61,10 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.deleteUser(userId));
     }
 
-
+    @PutMapping("/name/update/{userId}")
+    public ResponseEntity<ReqRes> updateName(@PathVariable Integer userId, @RequestParam("name") String name) {
+        ReqRes response = usersManagementService.updateName(userId, name);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 
 }

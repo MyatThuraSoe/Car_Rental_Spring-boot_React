@@ -1,5 +1,9 @@
 package com.mzp.carrental.entity.Users;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mzp.carrental.entity.Cars.Car;
 import com.mzp.carrental.entity.OurUsers;
 import jakarta.persistence.*;
@@ -10,16 +14,19 @@ import java.util.List;
 
 @Entity
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Agency {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id; // Change this to Integer to match OurUsers ID type
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId // This maps the id of Agency to the id of OurUsers
     @JoinColumn(name = "ourusers_id", nullable = false)
+    @JsonIgnore
     private OurUsers ourUsers;
 
-    @Column(nullable = true) //(nullable = false, unique = true)
+
+    @Column(nullable = true)
     private String username;
 
     @Column(nullable = true)
@@ -32,16 +39,17 @@ public class Agency {
     private String city;
 
     @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // To handle JSON serialization properly
     private List<Car> cars;
 
 
     // getter and setter
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -87,16 +95,26 @@ public class Agency {
         this.cars = cars;
     }
 
+
+
     @Override
     public String toString() {
         return "Agency{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", password='" + "***" + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", city='" + city + '\'' +
-                ", cars=" + cars +
-                '}';
+                '}'; // Excluding 'cars' to prevent recursion
     }
+
+
+    public OurUsers getOurUsers() {
+        return ourUsers;
+    }
+
+    public void setOurUsers(OurUsers ourUsers) {
+        this.ourUsers = ourUsers;
+    }
+
 }

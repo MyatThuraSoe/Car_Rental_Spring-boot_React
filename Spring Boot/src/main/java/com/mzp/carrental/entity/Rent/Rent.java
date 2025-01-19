@@ -2,7 +2,6 @@ package com.mzp.carrental.entity.Rent;
 
 
 import com.mzp.carrental.entity.Cars.Car;
-import com.mzp.carrental.entity.Order.RentalOrder;
 import com.mzp.carrental.entity.Users.Customer;
 import jakarta.persistence.*;
 import lombok.Data;

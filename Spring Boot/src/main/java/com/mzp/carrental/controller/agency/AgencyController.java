@@ -22,6 +22,8 @@ public class AgencyController {
     @Autowired
     private AgencyService agencyService;
 
+
+
     @GetMapping
     public ResponseEntity<List<Agency>> getAllAgencies() {
         List<Agency> agencies = agencyService.getAllAgencies();
@@ -31,8 +33,10 @@ public class AgencyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Agency> getAgencyById(@PathVariable Long id) {
+    public ResponseEntity<Agency> getAgencyById(@PathVariable Integer id) {
+        System.out.println("Inside get agency");
         Agency agency = agencyService.getAgencyById(id);
+        System.out.println("And here is " + agency.toString());
         return agency != null
                 ? ResponseEntity.ok(agency)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -45,7 +49,7 @@ public class AgencyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Agency> updateAgency(@PathVariable Long id, @RequestBody Agency agency) {
+    public ResponseEntity<Agency> updateAgency(@PathVariable Integer id, @RequestBody Agency agency) {
         Agency updatedAgency = agencyService.updateAgency(id, agency);
         return updatedAgency != null
                 ? ResponseEntity.ok(updatedAgency)
@@ -53,10 +57,13 @@ public class AgencyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAgency(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAgency(@PathVariable Integer id) {
         boolean isDeleted = agencyService.deleteAgency(id);
         return isDeleted
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+
+
 }
