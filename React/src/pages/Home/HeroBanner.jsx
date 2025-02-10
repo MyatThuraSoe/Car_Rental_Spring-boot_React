@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import { useState } from 'react';
 import './HeroBanner.css';
 
@@ -24,68 +24,68 @@ const HeroBanner = () => {
             if (dropOffDate && selectedDate > dropOffDate) {
                 setDropOffDate("");
             }
-        } 
+        }
     };
 
     const handleDropOffDateChange = (e) => {
         const selectedDate = e.target.value;
         if (selectedDate > pickUpDate) {
             setDropOffDate(selectedDate);
-        } 
+        }
     };
 
     return (
         <>
-        <div className="hero-banner" style={{ backgroundImage: `url('./porsche.jpg')` }}>
-            <div className="search-section">
-                <div className='title'>
-                    <h2>Pick up and drop off</h2>
-                    <span>Need help? Call: <a href="tel:5554280940">555–428–0940</a></span>
-                </div>
-                <div className="search-fields">
-                    <input type="text" placeholder="City, airport, train station..." className="location-input" />
-                    <div className="date-time">
-                        <div className="date-input">
-                            <label>Pick up day</label>
-                            <input 
-                                type="date" 
-                                value={pickUpDate} 
-                                onChange={handlePickUpDateChange} 
-                                min={new Date().toISOString().split("T")[0]} 
-                            />
-                            <input type="time" />
-                        </div>
-                        <div className="date-input">
-                            <label>Drop off day</label>
-                            <input 
-                                type="date" 
-                                value={dropOffDate} 
-                                onChange={handleDropOffDateChange} 
-                                min={pickUpDate || new Date().toISOString().split("T")[0]} 
-                                disabled={!pickUpDate} 
-                            />
-                            <input type="time" />
-                        </div>
+            <div className="hero-banner" style={{ backgroundImage: `url('./porsche.jpg')` }}>
+                <div className="search-section">
+                    <div className='title'>
+                        <h2>Pick up and drop off</h2>
+                        <span>Need help? Call: <a href="tel:5554280940">555–428–0940</a></span>
                     </div>
-                    <div className="options">
-                        <label>
-                            <input type="checkbox" /> Need a driver?
-                        </label>
-                        <label>
-                            Driver's age <select>
-                                <option>18 - 24</option>
-                                <option>25 - 75</option>
-                                <option>76+</option>
-                            </select>
-                        </label>
+                    <div className="search-fields">
+                        <input type="text" placeholder="City, airport, train station..." className="location-input" />
+                        <div className="date-time">
+                            <div className="date-input">
+                                <label>Pick up day</label>
+                                <input
+                                    type="date"
+                                    value={pickUpDate}
+                                    onChange={handlePickUpDateChange}
+                                    min={new Date().toISOString().split("T")[0]}
+                                />
+                                <input type="time" />
+                            </div>
+                            <div className="date-input">
+                                <label>Drop off day</label>
+                                <input
+                                    type="date"
+                                    value={dropOffDate}
+                                    onChange={handleDropOffDateChange}
+                                    min={pickUpDate || new Date().toISOString().split("T")[0]}
+                                    disabled={!pickUpDate}
+                                />
+                                <input type="time" />
+                            </div>
+                        </div>
+                        <div className="options">
+                            <label>
+                                <input type="checkbox" /> Need a driver?
+                            </label>
+                            <label>
+                                Driver&apos;s age <select>
+                                    <option>18 - 24</option>
+                                    <option>25 - 75</option>
+                                    <option>76+</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button className="search-button">Search</button>
                     </div>
-                    <button className="search-button">Search</button>
                 </div>
             </div>
-        </div>
 
-        <div className="pupular-brands">
-            <h2>Pupular Brands</h2>
+            <div className="pupular-brands">
+                <h2>Pupular Brands</h2>
                 <div className="car-logos">
                     {carLogos.map((logo, index) => (
                         <div key={index} className="car-logo-container">
@@ -93,8 +93,8 @@ const HeroBanner = () => {
                         </div>
                     ))}
                 </div>
-        </div>
-         </>
+            </div>
+        </>
     );
 };
 

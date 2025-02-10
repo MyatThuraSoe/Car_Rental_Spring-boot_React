@@ -24,6 +24,7 @@ import CarList from './pages/Cars/CarList';
 import Services from "./pages/Services/Services";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import MyAccount from "./pages/My Account/MyAccount";
+import AgencyOrderList from "./pages/AgencyOrderList";
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
                         <Route path='/agency/rent/orders' element={<AgencyRentalOrdersList />} />
                         <Route path="/agency/cars/:id/orders" element={<OrdersManagement />} />
                         <Route path="/agency/cars/:id/rents" element={<RentsManagement />} />
+                       
 
                         {/* Customer Routes */}
                         <Route path="/customer/login" element={<CustomerLogin />} />

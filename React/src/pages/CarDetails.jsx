@@ -10,7 +10,7 @@ const CarDetails = () => {
   const [car, setCar] = useState(null);
   const [carImage, setCarImage] = useState(null);
   const [error, setError] = useState(null);
-  const [rentedDates, setRentedDates] = useState([]);
+  const [unavailableDates, setUnavailableDates] = useState([]);
   const { authData } = useAuth();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -20,17 +20,17 @@ const CarDetails = () => {
       // If user is not authenticated, do not fetch car details
       return;
     }
-
     const fetchCarDetails = async () => {
       try {
         const carEndpoint =
           authData.role === "Agency" ? `/agency/cars/${id}` : `/view/cars/${id}`;
         const carResponse = await axiosInstance.get(carEndpoint);
         setCar(carResponse.data);
-        console.log(carResponse.data);
+        console.log("Car Details:", carResponse.data);
         const imageResponse = await axiosInstance.get(`/view/cars/${id}/image`, {
           responseType: "blob",
         });
+        console.log(imageResponse.data);
         setCarImage(URL.createObjectURL(imageResponse.data));
       } catch (err) {
         console.error("Error fetching car details or image:", err);
@@ -38,29 +38,19 @@ const CarDetails = () => {
       }
     };
 
-    const fetchRentedDates = async () => {
+    const fetchUnavailableDates = async () => {
       try {
-        // Uncomment the line below to fetch rented dates from the server
-        // const response = await axiosInstance.get(`/rent/cars/${id}/rented-dates`);
-        // setRentedDates(response.data);
-        setRentedDates([
-          {
-            startDate: "2025-01-10",
-            endDate: "2025-01-15",
-          },
-          {
-            startDate: "2025-01-20",
-            endDate: "2025-01-25",
-          },
-        ]);
+        const response = await axiosInstance.get(`/api/rents/${id}/unavailable-dates`);
+        setUnavailableDates(response.data.map(date => new Date(date)));
+        console.log("Unavailable Dates:", response.data);
       } catch (err) {
-        console.error("Error fetching rented dates:", err);
-        setError("Failed to fetch rented dates. Please try again later.");
+        console.error("Error fetching unavailable dates:", err);
+        setError("Failed to fetch unavailable dates. Please try again later.");
       }
     };
 
     fetchCarDetails();
-    fetchRentedDates();
+    fetchUnavailableDates();
   }, [id, authData.token, authData.role]);
 
   if (error) {
@@ -103,15 +93,17 @@ const CarDetails = () => {
 
   return (
     <div className="container my-4">
+      
+
       {authData.token ? (
         <>
           <h1 className="mb-4">
             {car?.brand} {car?.model}
           </h1>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6 img-container">
               <img
-                src={carImage || "https://via.placeholder.com/400"}
+                src={carImage || "https://dummyimage.com/400x300/000/fff"} // Use a different placeholder
                 alt={`${car?.brand} ${car?.model}`}
                 className="img-fluid rounded"
                 style={{ maxHeight: "300px", objectFit: "cover" }}
@@ -120,16 +112,49 @@ const CarDetails = () => {
             <div className="col-md-6">
               <ul className="list-group">
                 <li className="list-group-item">
-                  <strong>Price per Day:</strong> ${car?.pricePerDay}
+                  <strong>Brand:</strong> {car?.brand}
                 </li>
                 <li className="list-group-item">
-                  <strong>License Plate:</strong> {car?.licensePlate}
+                  <strong>Model:</strong> {car?.model}
+                </li>
+                <li className="list-group-item">
+                  <strong>Year:</strong> {car?.year}
+                </li>
+                <li className="list-group-item">
+                  <strong>Category:</strong> {car?.category}
+                </li>
+                <li className="list-group-item">
+                  <strong>Transmission:</strong> {car?.transmission}
+                </li>
+                <li className="list-group-item">
+                  <strong>Fuel Type:</strong> {car?.fuelType}
                 </li>
                 <li className="list-group-item">
                   <strong>Color:</strong> {car?.color}
                 </li>
                 <li className="list-group-item">
-                  <strong>Year:</strong> {car?.year}
+                  <strong>Seats:</strong> {car?.seats}
+                </li>
+                <li className="list-group-item">
+                  <strong>VIN:</strong> {car?.vin}
+                </li>
+                <li className="list-group-item">
+                  <strong>Mileage:</strong> {car?.mileage} km
+                </li>
+                <li className="list-group-item">
+                  <strong>License Plate:</strong> {car?.licensePlate}
+                </li>
+                <li className="list-group-item">
+                  <strong>Features:</strong> {car?.features}
+                </li>
+                <li className="list-group-item">
+                  <strong>Description:</strong> {car?.description}
+                </li>
+                <li className="list-group-item">
+                  <strong>Price per Day:</strong> ${car?.pricePerDay}
+                </li>
+                <li className="list-group-item">
+                  <strong>Driver Fee per Day:</strong> ${car?.driverFeePerDay}
                 </li>
               </ul>
               <div className="mt-4">
@@ -172,12 +197,138 @@ const CarDetails = () => {
             footer={null}
             centered
           >
-            <CarOrderForm car={car} rentedDates={rentedDates} onClose={handleModalClose} />
+            <CarOrderForm car={car} unavailableDates={unavailableDates} onClose={handleModalClose} />
           </Modal>
         </>
       ) : (
         <p>Please log in to view car details.</p>
       )}
+
+
+<style>
+        {`
+          /* General Styles */
+          body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+          }
+
+          h1 {
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+          }
+
+          .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          }
+
+          img {
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out;
+          }
+
+          img:hover {
+            transform: scale(1.05);
+          }
+          .img-container{
+              display: flex;     
+              align-items: center;
+              justify-content: center;
+          }
+
+          .list-group-item {
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          }
+
+          .list-group-item strong {
+            color: #2c3e50;
+          }
+
+          .btn {
+            margin-right: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease-in-out;
+          }
+
+          .btn-primary {
+            background-color:rgb(219, 208, 52);
+            border: none;
+          }
+
+          .btn-primary:hover {
+            background-color: #2980b9;
+          }
+
+          .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+          }
+
+          .btn-danger:hover {
+            background-color: #c0392b;
+          }
+
+          .btn-success {
+            background-color: #2ecc71;
+            border: none;
+          }
+
+          .btn-success:hover {
+            background-color: #27ae60;
+          }
+
+          .btn-secondary {
+            background-color: #95a5a6;
+            border: none;
+          }
+
+          .btn-secondary:hover {
+            background-color: #7f8c8d;
+          }
+
+          /* Modal Styles */
+          .ant-modal-content {
+            border-radius: 10px;
+          }
+
+          .ant-modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+          }
+
+          /* Responsive Design */
+          @media (max-width: 768px) {
+            .row {
+              flex-direction: column;
+            }
+
+            .col-md-6 {
+              width: 100%;
+            }
+
+            .btn {
+              width: 100%;
+              margin-bottom: 10px;
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };

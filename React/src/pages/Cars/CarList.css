@@ -1,7 +1,7 @@
 .car-list {
   max-width: 1200px;
   margin: 15px auto;
-  
+
   /* padding: 10px; */
 }
 
@@ -10,7 +10,7 @@
   /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-  
+
 }
 
 .car-cards .car-card {
@@ -21,7 +21,7 @@
   text-align: left;
 }
 
-.car-card:hover{
+.car-card:hover {
   transform: scale(1.04);
   transition: all 0.3s ease-in-out;
 }
@@ -74,16 +74,17 @@
   cursor: not-allowed;
 }
 
-@media (min-width: 770px) and (max-width: 1100px){
+@media (min-width: 770px) and (max-width: 1100px) {
   .car-cards {
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 769px) and (min-width: 400px){
+@media (max-width: 769px) and (min-width: 400px) {
   .car-cards {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
+
   .car-list {
     margin: 0 5px;
   }

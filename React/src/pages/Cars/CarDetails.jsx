@@ -10,7 +10,7 @@ const CarDetails = () => {
   const [car, setCar] = useState(null);
   const [carImage, setCarImage] = useState(null);
   const [error, setError] = useState(null);
-  const [rentedDates, setRentedDates] = useState([]);
+  const [unavailableDates, setUnavailableDates] = useState([]);
   const { authData } = useAuth();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -27,7 +27,8 @@ const CarDetails = () => {
           authData.role === "Agency" ? `/agency/cars/${id}` : `/view/cars/${id}`;
         const carResponse = await axiosInstance.get(carEndpoint);
         setCar(carResponse.data);
-        console.log(carResponse.data);
+        console.log("Car Details:", carResponse.data);
+
         const imageResponse = await axiosInstance.get(`/view/cars/${id}/image`, {
           responseType: "blob",
         });
@@ -38,29 +39,19 @@ const CarDetails = () => {
       }
     };
 
-    const fetchRentedDates = async () => {
+    const fetchUnavailableDates = async () => {
       try {
-        // Uncomment the line below to fetch rented dates from the server
-        // const response = await axiosInstance.get(`/rent/cars/${id}/rented-dates`);
-        // setRentedDates(response.data);
-        setRentedDates([
-          {
-            startDate: "2025-01-10",
-            endDate: "2025-01-15",
-          },
-          {
-            startDate: "2025-01-20",
-            endDate: "2025-01-25",
-          },
-        ]);
+        const response = await axiosInstance.get(`/cars/${id}/unavailable-dates`);
+        setUnavailableDates(response.data.map(date => new Date(date)));
+        console.log("Unavailable Dates:", response.data);
       } catch (err) {
-        console.error("Error fetching rented dates:", err);
-        setError("Failed to fetch rented dates. Please try again later.");
+        console.error("Error fetching unavailable dates:", err);
+        setError("Failed to fetch unavailable dates. Please try again later.");
       }
     };
 
     fetchCarDetails();
-    fetchRentedDates();
+    fetchUnavailableDates();
   }, [id, authData.token, authData.role]);
 
   if (error) {
@@ -111,7 +102,7 @@ const CarDetails = () => {
           <div className="row">
             <div className="col-md-6">
               <img
-                src={carImage || "https://via.placeholder.com/400"}
+                src={carImage || "https://dummyimage.com/400x300/000/fff"} // Use a different placeholder
                 alt={`${car?.brand} ${car?.model}`}
                 className="img-fluid rounded"
                 style={{ maxHeight: "300px", objectFit: "cover" }}
@@ -172,7 +163,7 @@ const CarDetails = () => {
             footer={null}
             centered
           >
-            <CarOrderForm car={car} rentedDates={rentedDates} onClose={handleModalClose} />
+            <CarOrderForm car={car} unavailableDates={unavailableDates} onClose={handleModalClose} />
           </Modal>
         </>
       ) : (

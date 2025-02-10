@@ -1,0 +1,7 @@
+.unavailable-day {
+    color: red !important; /* Change text color to red */
+    background-color: #f8d7da !important; /* Light red background */
+    pointer-events: none; /* Make the day unclickable */
+    cursor: not-allowed;
+  }
+  
