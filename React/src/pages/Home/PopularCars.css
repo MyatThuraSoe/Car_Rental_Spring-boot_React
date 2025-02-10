@@ -15,7 +15,7 @@
 .car-filters {
     display: flex;
     justify-content: center;
-    gap: 15px;  
+    gap: 15px;
     margin-bottom: 30px;
 }
 
@@ -30,7 +30,8 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.filter-button.active, .filter-button:hover {
+.filter-button.active,
+.filter-button:hover {
     background-color: #f0c040;
     color: #fff;
 }
@@ -50,7 +51,7 @@
     padding: 0px;
     width: 100%;
     max-width: 250px;
-    position: relative; 
+    position: relative;
     height: 300px;
     display: flex;
     flex-direction: column;
@@ -88,8 +89,8 @@
 
 .details-button {
     position: absolute;
-    bottom: 10px; 
-    right: 10px; 
+    bottom: 10px;
+    right: 10px;
     padding: 8px 16px;
     background-color: #f0c040;
     border: none;
@@ -102,12 +103,9 @@
 
 .details-button:hover {
     background-color: #fff;
-    color: #f0c040;
-    border: 2px solid #f0c040;
-    transform: scale(0.9); 
 }
 
-.car-card-popular :hover{
+.car-card-popular:hover img {
     transform: scale(1.1);
     transition: transform 0.3s ease;
 }

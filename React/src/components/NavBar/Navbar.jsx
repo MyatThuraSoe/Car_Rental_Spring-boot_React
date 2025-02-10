@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Navbar.css';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import mzpLogo from '../../../public/mzpLogo.png';
+import mzpLogo from '/mzpLogo.png';
 
 const Navbar = () => {
     const [isMobile, setIsMobile] = useState(false);
@@ -16,7 +16,7 @@ const Navbar = () => {
     const getLinkClassName = (path) => {
         return location.pathname === path ? 'active-link' : '';  // Add 'active-link' for the current path
     };
-    
+
     const { authData, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <Link className="logo" to="/">
-            <img src={mzpLogo} alt="MZP Logo" width="100px" height="60px" />
+                <img src={mzpLogo} alt="MZP Logo" width="100px" height="60px" />
             </Link>
             <div className="hamburger" onClick={handleToggle}>
                 <span className="bar"></span>
@@ -43,41 +43,44 @@ const Navbar = () => {
                 <li><Link className={getLinkClassName('/account')} to="/account">My Account</Link></li>
 
                 {!authData.token ? (
-                        <>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/login">Login</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/customer/register">Customer Register</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/agency/register">Agency Register</Link>
-                            </li>
-                        </>
-                    ) : (
-                        <>
-                            <li className="nav-item">
-                                <span style={{ fontSize: "18px", color: "orange", marginRight: "15px" }}>
-                                    You are logged in as: {authData.role || "Unknown Role"}
-                                </span>
-                            </li>
-                            <li className="nav-item">
-                                <button className="btn btn-outline-danger" onClick={handleLogout}>Logout</button>
-                            </li>
-                            {authData.role == "Agency" &&
+                    <>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/login">Login</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/customer/register">Customer Register</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/agency/register">Agency Register</Link>
+                        </li>
+                    </>
+                ) : (
+                    <>
+                        <li className="nav-item">
+                            <span style={{ fontSize: "18px", color: "orange", marginRight: "15px" }}>
+                                You are logged in as: {authData.role || "Unknown Role"}
+                            </span>
+                        </li>
+                        <li className="nav-item">
+                            <button className="btn btn-outline-danger" onClick={handleLogout}>Logout</button>
+                        </li>
+                        {authData.role == "Agency" &&
                             <>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/agency/add-car">Add Car</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/agency/cars">Our Cars</Link>
+                                    <Link className="nav-link" to="/agency/cars">My Cars</Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/agency/profile">Profile</Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/agency/rent/orders">Orders</Link>
+                                </li>
                             </>
-                            }
-                            {authData.role == "Customer" &&
+                        }
+                        {authData.role == "Customer" &&
                             <>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/browse">Browse Cars</Link>
@@ -92,10 +95,10 @@ const Navbar = () => {
                                     <Link className="nav-link" to="/customer/cars/rents">Rents</Link>
                                 </li>
                             </>
-                            }
-                            
-                        </>
-                    )
+                        }
+
+                    </>
+                )
                 }
             </ul>
         </nav>

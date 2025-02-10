@@ -86,12 +86,14 @@ input:focus {
     margin-top: 10px;
 }
 .car-logos {
+    /* background-color: white; */
     display: flex;
     overflow-x: auto;
-    gap: 40px;
-    padding: 10px;
+    gap: 32px;
+    padding: 5px;
     justify-content: center;
     align-items: center;
+    
 }
 .car-logo-container{
     border: 1px solid #e0e0e0;
@@ -109,8 +111,9 @@ input:focus {
     transition: all 0.2s ease-in-out;
 }
 .car-logo {
-    height: 120px;
-    width: 120px;
+    background-color: white;
+    height: 145px;
+    width: 145px;
     object-fit: contain;
     cursor: pointer;
 }

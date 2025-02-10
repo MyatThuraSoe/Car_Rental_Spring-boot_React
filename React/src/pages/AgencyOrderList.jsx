@@ -3,7 +3,7 @@ import axiosInstance from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import "./AgencyCars.css"
 
-const fetchAgencyCars = async () => {
+const fetchAgencyOrderList = async () => {
     try {
         const response = await axiosInstance.get("/agency/cars");
         const carsData = response.data;
@@ -31,7 +31,7 @@ const fetchAgencyCars = async () => {
     }
 };
 
-const AgencyCars = () => {
+const AgencyOrderList = () => {
     const [cars, setCars] = useState([]);
     const [carImages, setCarImages] = useState({});
     const [error, setError] = useState(null);
@@ -105,4 +105,4 @@ const AgencyCars = () => {
     );
 };
 
-export default AgencyCars;
+export default AgencyOrderList;

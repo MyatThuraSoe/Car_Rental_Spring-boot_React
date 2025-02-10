@@ -68,7 +68,7 @@ const UpdateCarForm = () => {
                 },
             });
             alert("Car updated successfully!");
-            navigate(`/agency/cars/${id}`);
+            navigate(`/cars/${id}`);
         } catch (err) {
             alert("Failed to update car.");
         }

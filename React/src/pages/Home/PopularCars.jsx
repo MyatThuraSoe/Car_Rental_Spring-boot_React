@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './PopularCars.css';
 import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const PopularCars = () => {
-    const [cars, setCars] = useState([]); 
-    const [filter, setFilter] = useState('All'); 
-    const [loading, setLoading] = useState(true); 
+    const [cars, setCars] = useState([]);
+    const [filter, setFilter] = useState('All');
+    const [loading, setLoading] = useState(true);
     const Navigate = useNavigate();
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const PopularCars = () => {
             } catch (error) {
                 console.error('Error fetching cars:', error);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
@@ -42,13 +42,13 @@ const PopularCars = () => {
 
     const filteredCars = filter === 'All' ? cars : cars.filter(car => car.category === filter);
 
-    if (loading) return <div>Loading...</div>; 
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div className="popular-cars">
             <h2 className="header">Popular Cars</h2>
             <div className="car-filters">
-                {['All', 'Sedan', 'HATCHBACK', 'SUV', 'EV', 'Crossover'].map(category => (
+                {['All', 'SEDAN', 'HATCHBACK', 'COUPE', 'CONVERTIBLE', 'TRUCK', 'VAN', 'OTHER'].map(category => (
                     <button
                         key={category}
                         className={`filter-button ${filter === category ? 'active' : ''}`}

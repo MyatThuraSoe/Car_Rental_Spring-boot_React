@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import BookingCalendar from '../components/BookingCalendar'; // Assume this component exists
-import moment from 'moment';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
-const CarOrderForm = ({ car, rentedDates }) => {
+const CarOrderForm = ({ car, unavailableDates, onClose }) => {
   const [formData, setFormData] = useState({
     startDate: null,
     endDate: null,
@@ -13,22 +12,20 @@ const CarOrderForm = ({ car, rentedDates }) => {
     pickUpLocation: '',
     dropOffLocation: '',
   });
-
   const [totalPrice, setTotalPrice] = useState(0);
   const [numberOfDays, setNumberOfDays] = useState(0);
   const { authData } = useAuth();
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const driverFeePerDay = car.driverFeePerDay; // Fee per day for a driver
-  const rentalPricePerDay = car.pricePerDay; // Car's daily rental price
+  const driverFeePerDay = car.driverFeePerDay || 0; // Fee per day for a driver
+  const rentalPricePerDay = car.pricePerDay || 0; // Car's daily rental price
 
   // Calculate the total price whenever inputs change
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
-      const start = moment(formData.startDate);
-      const end = moment(formData.endDate);
-      const days = end.diff(start, 'days') + 1;
-
+      const start = new Date(formData.startDate);
+      const end = new Date(formData.endDate);
+      const days = (end - start) / (1000 * 60 * 60 * 24) + 1;
       if (days > 0) {
         setNumberOfDays(days);
         const driverCost = formData.includeDriver ? days * driverFeePerDay : 0;
@@ -41,8 +38,7 @@ const CarOrderForm = ({ car, rentedDates }) => {
       setNumberOfDays(0);
       setTotalPrice(0);
     }
-
-    console.log(car);
+    console.log("Car Details:", car);
   }, [formData, driverFeePerDay, rentalPricePerDay]);
 
   const handleDateSelect = ({ startDate, endDate }) => {
@@ -61,9 +57,8 @@ const CarOrderForm = ({ car, rentedDates }) => {
     }));
   };
 
-  const handleSubmit = async (e) =>  {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!formData.startDate || !formData.endDate || !formData.pickUpLocation || !formData.dropOffLocation) {
       alert('Please fill out all required fields.');
       return;
@@ -71,31 +66,25 @@ const CarOrderForm = ({ car, rentedDates }) => {
     const postData = {
       carId: car.id,
       customerId: authData.user.id, // Assuming this is provided
-      startDate: formData.startDate,
-      endDate: formData.endDate,
+      startDate: new Date(formData.startDate).toISOString().split('T')[0],
+      endDate: new Date(formData.endDate).toISOString().split('T')[0],
       includeDriver: formData.includeDriver,
       pickUpLocation: formData.pickUpLocation,
       dropOffLocation: formData.dropOffLocation,
       totalPrice: totalPrice,
     };
-    console.log("auth data user id is ", authData.user.id)
-    console.log(postData);
-    try{
-      const response = await axiosInstance.post('/rent/orders',  {
-        carId: car.id,
-        customerId: authData.user.id, // Assuming this is provided
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        includeDriver: formData.includeDriver,
-        pickUpLocation: formData.pickUpLocation,
-        dropOffLocation: formData.dropOffLocation,
-        totalPrice: totalPrice,
-      });
-      Navigate('/browse');
-    }catch(err){
-      console.log(err);
+    console.log("auth data user id is ", authData.user.id);
+    console.log("Post Data:", postData);
+    try {
+      const response = await axiosInstance.post('/rent/orders', postData);
+      console.log("Order submitted successfully:", response.data);
+      alert("Order Submitted Successfully");
+      onClose();
+      navigate('/cars');
+    } catch (err) {
+      console.error("Error submitting order:", err);
+      alert("Failed to submit order. Please try again.");
     }
-    
   };
 
   return (
@@ -103,17 +92,14 @@ const CarOrderForm = ({ car, rentedDates }) => {
       <h2>Car Rental Order Form</h2>
       <p><strong>Car Name:</strong> {car.brand} {car.model}</p>
       <p><strong>Car ID:</strong> {car.id}</p>
-
       <form onSubmit={handleSubmit}>
         {/* Booking Calendar */}
         <div className="form-group">
           <label>Select Rental Dates:</label>
-          <BookingCalendar rentedDates={rentedDates} onDateSelect={handleDateSelect} />
+          <BookingCalendar rentedDates={unavailableDates} onDateSelect={handleDateSelect} />
         </div>
-
         {/* Number of Days */}
         {numberOfDays > 0 && <p>Number of Days: {numberOfDays}</p>}
-
         {/* Include Driver */}
         <div className="form-group">
           <label>
@@ -126,7 +112,6 @@ const CarOrderForm = ({ car, rentedDates }) => {
             Include Driver (${driverFeePerDay}/day)
           </label>
         </div>
-
         {/* Pickup Location */}
         <div className="form-group">
           <label>Pick-Up Location:</label>
@@ -138,7 +123,6 @@ const CarOrderForm = ({ car, rentedDates }) => {
             required
           />
         </div>
-
         {/* Drop-Off Location */}
         <div className="form-group">
           <label>Drop-Off Location:</label>
@@ -150,15 +134,12 @@ const CarOrderForm = ({ car, rentedDates }) => {
             required
           />
         </div>
-
         {/* Total Price */}
         <p><strong>Total Price:</strong> ${totalPrice.toFixed(2)}</p>
-
         {/* Submit Button */}
         <button type="submit">Submit Order</button>
       </form>
-
-      <style jsx>{`
+      <style>{`
         .car-order-form {
           max-width: 600px;
           margin: 0 auto;

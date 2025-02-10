@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./FilterCar.css";
-
-
-const FilterCar = () => {
+ 
+const FilterCar = ({ onSearchChange }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
@@ -11,33 +10,32 @@ const FilterCar = () => {
   const [minYear, setMinYear] = useState("Min Year");
   const [maxYear, setMaxYear] = useState("Max Year");
   const [priceRange, setPriceRange] = useState({ min: 10000, max: 500000 });
-
+ 
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
   const [bodyTypes, setBodyTypes] = useState([]);
-
+ 
   useEffect(() => {
     // Fetch car data from the new API endpoint
     axios
       .get("https://www.freetestapi.com/api/v1/cars")
       .then((response) => {
-        const cars = response.data; 
+        const cars = response.data;
         const uniqueMakes = [...new Set(cars.map((car) => car.make))];
         const uniqueModels = [...new Set(cars.map((car) => car.model))];
         const uniqueBodyTypes = [...new Set(cars.map((car) => car.bodyType))];
-
+ 
         setMakes(uniqueMakes);
         setModels(uniqueModels);
         setBodyTypes(uniqueBodyTypes);
       })
       .catch((error) => console.error("Error fetching car data:", error));
-    
   }, []);
-
+ 
   const handlePriceChange = (e) => {
     const { name, value } = e.target;
     const numericValue = Number(value);
-
+ 
     if (name === "min") {
       setPriceRange((prev) => ({
         ...prev,
@@ -50,17 +48,23 @@ const FilterCar = () => {
       }));
     }
   };
-
+ 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    onSearchChange(value); // Notify parent component of the search term change
+  };
+ 
   return (
     <>
       <input
         type="text"
         placeholder="Search Cars"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={handleSearchChange}
         className="search-input"
       />
-
+ 
       <div className="filter-bar">
         <select value={make} onChange={(e) => setMake(e.target.value)} className="dropdown">
           <option value="">All Makes</option>
@@ -70,7 +74,7 @@ const FilterCar = () => {
             </option>
           ))}
         </select>
-
+ 
         <select value={model} onChange={(e) => setModel(e.target.value)} className="dropdown">
           <option value="">All Models</option>
           {models.map((model, index) => (
@@ -79,7 +83,7 @@ const FilterCar = () => {
             </option>
           ))}
         </select>
-
+ 
         <select value={bodyType} onChange={(e) => setBodyType(e.target.value)} className="dropdown">
           <option value="">All Body Types</option>
           {bodyTypes.map((type, index) => (
@@ -88,7 +92,7 @@ const FilterCar = () => {
             </option>
           ))}
         </select>
-
+ 
         <div className="year-dropdown">
           <label>Year:</label>
           <select value={minYear} onChange={(e) => setMinYear(e.target.value)} className="dropdown">
@@ -99,7 +103,7 @@ const FilterCar = () => {
               </option>
             ))}
           </select>
-
+ 
           <select value={maxYear} onChange={(e) => setMaxYear(e.target.value)} className="dropdown">
             <option value="">Max Year</option>
             {[...Array(24).keys()].map((i) => (
@@ -109,7 +113,7 @@ const FilterCar = () => {
             ))}
           </select>
         </div>
-
+ 
         <div className="price-range">
           <label>Price Range:</label>
           <div className="range-inputs">
@@ -157,5 +161,5 @@ const FilterCar = () => {
     </>
   );
 };
-
+ 
 export default FilterCar;

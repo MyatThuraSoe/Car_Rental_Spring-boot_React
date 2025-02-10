@@ -11,12 +11,12 @@ const OrderDetailsModal = ({ show, handleClose, order, onApprove, onDeny }) => {
 
     useEffect(() => {
         const fetchCar = async () => {
-            if (!order || !order.car) {
+            if (!order || !order.carId) {
                 console.log("There is no car in the modal", order);
                 return;
             }
     
-            let carId = order.car.id || order.car; // Handle cases where `order.car` is an object or an ID
+            let carId = order.carId; // Handle cases where `order.car` is an object or an ID
             setCarLoading(true);
             try {
                 // Fetch car image
@@ -24,6 +24,7 @@ const OrderDetailsModal = ({ show, handleClose, order, onApprove, onDeny }) => {
                     responseType: 'blob',
                 });
                 setCarImage(URL.createObjectURL(imageResponse.data));
+                console.log("Car image fetched");
     
                 // Fetch car details
                 const detailsResponse = await axiosInstance.get(`/agency/cars/${carId}`);
