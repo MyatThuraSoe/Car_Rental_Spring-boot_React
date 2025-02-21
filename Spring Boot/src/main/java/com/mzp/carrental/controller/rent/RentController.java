@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.mzp.carrental.service.rent.RentService;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -48,6 +50,19 @@ public class RentController {
     public ResponseEntity<List<RentDTO>> getRentByCustomer() {
         List<RentDTO> rents = rentService.getFilteredRentsByCustomer();
         return ResponseEntity.ok(rents);
+    }
+
+    @GetMapping("/agency")
+    public ResponseEntity<List<RentDTO>> getRentByAgency() {
+        List<RentDTO> rents = rentService.getFilteredRentsByAgency();
+        return ResponseEntity.ok(rents);
+    }
+
+    @GetMapping("/{carId}/unavailable-dates")
+    public ResponseEntity<List<LocalDate>> getUnavailableDates(@PathVariable Long carId) {
+        // Collect unavailable dates (based on the start and end date of each order)
+        List<LocalDate> unavailableDates = rentService.getUnavailableDatesByCar(carId);
+        return ResponseEntity.ok(unavailableDates);
     }
 }
 

@@ -1,5 +1,6 @@
 package com.mzp.carrental.repository.Customer;
 
+import com.mzp.carrental.entity.OurUsers;
 import com.mzp.carrental.entity.Users.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,5 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 
     Optional<Customer> findByOurUsers_Email(String email);
 
+    Optional<Customer> findByOurUsers(OurUsers ourUsers);
 }

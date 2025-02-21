@@ -17,6 +17,13 @@ public class RentDTO {
     private boolean includeDriver;
     private double totalPrice;
 
+
+    private String carBrand;
+    private String carModel;
+    private String customerName;
+    private String pickUpLocation;
+    private String dropOffLocation;
+
     private Rent.RentStatus rentStatus;
 
     public enum RentStatus {
@@ -90,15 +97,62 @@ public class RentDTO {
         this.totalPrice = totalPrice;
     }
 
+    public String getCarBrand() {
+        return carBrand;
+    }
+
+    public void setCarBrand(String carBrand) {
+        this.carBrand = carBrand;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getPickUpLocation() {
+        return pickUpLocation;
+    }
+
+    public void setPickUpLocation(String pickUpLocation) {
+        this.pickUpLocation = pickUpLocation;
+    }
+
+    public String getDropOffLocation() {
+        return dropOffLocation;
+    }
+
+    public void setDropOffLocation(String dropOffLocation) {
+        this.dropOffLocation = dropOffLocation;
+    }
+
     @Override
     public String toString() {
-        return "RentalOrderDTO{" +
-                "carId=" + carId +
+        return "RentDTO{" +
+                "id=" + id +
+                ", carId=" + carId +
                 ", customerId=" + customerId +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", includeDriver=" + includeDriver +
                 ", totalPrice=" + totalPrice +
+                ", carBrand='" + carBrand + '\'' +
+                ", carModel='" + carModel + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", pickUpLocation='" + pickUpLocation + '\'' +
+                ", dropOffLocation='" + dropOffLocation + '\'' +
+                ", rentStatus=" + rentStatus +
                 '}';
     }
 }

@@ -71,6 +71,14 @@ public class Car {
     @Column(nullable = false)
     private double driverFeePerDay;
 
+    @Column(nullable = true)
+    private Double avgRating = 0.0; // Deals with Ratings entity
+
+    @Column(nullable = true)
+    private Integer ratingCount = 0; // Deals with Ratings entity
+
+
+
     public enum Category {
         SUV, HATCHBACK, SEDAN, COUPE, CONVERTIBLE, TRUCK, VAN, OTHER
     }
@@ -263,5 +271,21 @@ public class Car {
 
     public void setDriverFeePerDay(double driverFeePerDay) {
         this.driverFeePerDay = driverFeePerDay;
+    }
+
+    public Double getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(Double avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }

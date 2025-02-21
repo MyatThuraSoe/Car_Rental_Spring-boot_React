@@ -1,6 +1,7 @@
 package com.mzp.carrental.dto;
 
 import com.mzp.carrental.entity.Rent.RentalOrder;
+import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +10,10 @@ import java.time.LocalDate;
 public class RentalOrderDTO {
     private Long id;
     private Long carId;
+    private String carBrand;
+    private String carModel;
     private Integer customerId;
+    private String customerName;
     private LocalDate startDate;
     private LocalDate endDate;
     private String pickUpLocation;
@@ -106,17 +110,46 @@ public class RentalOrderDTO {
         this.totalPrice = totalPrice;
     }
 
+    public String getCarBrand() {
+        return carBrand;
+    }
+
+    public void setCarBrand(String carBrand) {
+        this.carBrand = carBrand;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     @Override
     public String toString() {
         return "RentalOrderDTO{" +
-                "carId=" + carId +
+                "id=" + id +
+                ", carId=" + carId +
+                ", carBrand='" + carBrand + '\'' +
+                ", carModel='" + carModel + '\'' +
                 ", customerId=" + customerId +
+                ", customerName='" + customerName + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", pickUpLocation='" + pickUpLocation + '\'' +
                 ", dropOffLocation='" + dropOffLocation + '\'' +
                 ", includeDriver=" + includeDriver +
                 ", totalPrice=" + totalPrice +
+                ", status=" + status +
                 '}';
     }
 }

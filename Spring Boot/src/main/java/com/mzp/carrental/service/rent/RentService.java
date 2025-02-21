@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -63,8 +65,17 @@ public class RentService {
         dto.setStartDate(rent.getStartDate());
         dto.setEndDate(rent.getEndDate());
 
+        dto.setPickUpLocation(rent.getRentalOrder().getPickUpLocation());
+        dto.setDropOffLocation(rent.getRentalOrder().getDropOffLocation());
+        dto.setIncludeDriver(rent.getRentalOrder().isIncludeDriver());
+        dto.setTotalPrice(rent.getRentalOrder().getTotalPrice());
+
+        dto.setCarBrand(rent.getCar().getBrand());
+        dto.setCarModel(rent.getCar().getModel());
         dto.setIncludeDriver(rent.isIncludeDriver());
         dto.setTotalPrice(rent.getTotalPrice());
+        System.out.println("Responded Rent DTO is ");
+        System.out.println(dto.toString());
         return dto;
     }
 
@@ -93,6 +104,60 @@ public class RentService {
         rents.forEach(rent -> System.out.println("rents: " + rent));
         // Map to DTOs
         return rents.stream().map(this::mapToDTO).toList();
+    }
+    public List<RentDTO> getFilteredRentsByAgency() {
+        String email = userDetailsService.getCurrentUserEmail();
+        System.out.println("Email in getFilteredRentsByAgency is " + email);
+
+        OurUsers user = usersRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Integer agencyId = user.getId();
+
+        List<Rent> rents = rentRepository.findByAgencyId(agencyId);
+
+        rents.forEach(rent -> System.out.println("Rent: " + rent));
+
+        return rents.stream().map(this::mapToDTO).toList();
+    }
+
+    public List<LocalDate> getUnavailableDatesByCar(Long carId) {
+        // Fetch and filter orders
+        List<Rent> filteredRents = getFilteredRentsByCar(carId)
+                .stream()
+                .map(this::mapToEntity) // Map DTO back to entity if needed
+                .toList();
+
+        // Print fetched orders for debugging
+        System.out.println("Fetched Orders for Car ID " + carId + ":");
+        for (Rent rent : filteredRents) {
+            System.out.println("Rent ID: " + rent.getId() + ", Start Date: " + rent.getStartDate() + ", End Date: " + rent.getEndDate());
+        }
+
+        // Calculate unavailable dates
+        List<LocalDate> unavailableDates = filteredRents.stream()
+                .flatMap(rent -> rent.getStartDate().datesUntil(rent.getEndDate().plusDays(1))) // Include end date
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Print unavailable dates for debugging
+        System.out.println("Unavailable Dates for Car ID " + carId + ":");
+        unavailableDates.forEach(System.out::println);
+
+        return unavailableDates;
+    }
+
+    private Rent mapToEntity(RentDTO dto) {
+        Rent entity = new Rent();
+        entity.setId(dto.getId());
+        entity.setRentStatus(dto.getRentStatus());
+        entity.setStartDate(dto.getStartDate());
+        entity.setEndDate(dto.getEndDate());
+        entity.setIncludeDriver(dto.isIncludeDriver());
+        entity.setTotalPrice(dto.getTotalPrice());
+
+
+        return entity;
     }
 }
 

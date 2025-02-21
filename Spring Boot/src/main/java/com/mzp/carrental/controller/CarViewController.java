@@ -1,7 +1,7 @@
 package com.mzp.carrental.controller;
 
 import com.mzp.carrental.entity.Cars.Car;
-import com.mzp.carrental.service.agency.CarService;
+import com.mzp.carrental.service.car.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

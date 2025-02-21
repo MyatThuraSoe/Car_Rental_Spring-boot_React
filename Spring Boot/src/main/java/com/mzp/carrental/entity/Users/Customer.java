@@ -32,6 +32,11 @@ public class Customer {
     @Column(nullable = true)
     private String city;
 
+    private String imageName;
+    private String imageType;
+    @Lob
+    private byte[] imageData;
+
     public Integer getId() {
         return id;
     }
@@ -92,5 +97,29 @@ public class Customer {
 
     public OurUsers getOurUsers() {
         return ourUsers;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 }

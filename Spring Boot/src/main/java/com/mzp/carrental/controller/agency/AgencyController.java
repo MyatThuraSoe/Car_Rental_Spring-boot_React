@@ -48,9 +48,30 @@ public class AgencyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAgency);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Agency> updateAgency(@PathVariable Integer id, @RequestBody Agency agency) {
-        Agency updatedAgency = agencyService.updateAgency(id, agency);
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Agency> updateAgency(@PathVariable Integer id, @RequestBody Agency agency) {
+//        Agency updatedAgency = agencyService.updateAgency(id, agency);
+//        return updatedAgency != null
+//                ? ResponseEntity.ok(updatedAgency)
+//                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Agency> updateAgency(
+            @PathVariable Integer id,
+            @RequestParam("username") String username,
+            @RequestParam("phoneNumber") String phoneNumber,
+            @RequestParam("address") String address,
+            @RequestParam("city") String city,
+            @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+
+        Agency agencyDetails = new Agency();
+        agencyDetails.setUsername(username);
+        agencyDetails.setPhoneNumber(phoneNumber);
+        agencyDetails.setAddress(address);
+        agencyDetails.setCity(city);
+
+        Agency updatedAgency = agencyService.updateAgency(id, agencyDetails, image);
         return updatedAgency != null
                 ? ResponseEntity.ok(updatedAgency)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();

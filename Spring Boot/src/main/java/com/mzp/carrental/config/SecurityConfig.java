@@ -34,11 +34,14 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request-> request.requestMatchers("/auth/**", "/public/**").permitAll()
+                        .requestMatchers("/agency/notifications/**").hasAnyAuthority("Agency")
+                        .requestMatchers("/customer/notifications/**").hasAnyAuthority("Customer")
                         .requestMatchers("/agency/**").hasAnyAuthority("Agency")
-                        .requestMatchers("/customer/**").hasAnyAuthority("Customer")
+                        .requestMatchers("/customer/**, /ratings/cars").hasAnyAuthority("Customer")
                         .requestMatchers("/view/cars/test/**").hasAnyAuthority("User")
                         .requestMatchers("/rent/**").hasAnyAuthority("Agency", "Customer")
-                        .requestMatchers("/view/cars").permitAll()
+
+                        .requestMatchers("/view/cars/**", "/view/agencies/**", "/view/customers/**","/place-order").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
