@@ -64,6 +64,11 @@ public class CarService {
         Agency currentAgency = getCurrentAgency();
         return carRepo.findByAgency(currentAgency);
     }
+    // Get all cars for the current agency
+    public List<Car> getAllCarsForAgency(Long id) {
+
+        return carRepo.findByAgencyId(id);
+    }
 
 
     // Get a car by ID for the current agency
@@ -304,7 +309,7 @@ public class CarService {
         Agency agency = car.get().getAgency();
 
         AgencyDTO agencyDTO;
-        agencyDTO = new AgencyDTO(agency.getId(),agency.getOurUsers().getEmail(),agency.getUsername(),agency.getPhoneNumber(),agency.getAddress(),agency.getCity(),agency.getCars().size());
+        agencyDTO = new AgencyDTO(agency.getId(),agency.getOurUsers().getEmail(),agency.getUsername(),agency.getPhoneNumber(),agency.getAddress(),agency.getCity(),agency.getCars().size(), agency.getVerificationStatus().toString());
         return agencyDTO;
     }
 
@@ -317,5 +322,9 @@ public class CarService {
                 }).orElseThrow(() -> new RuntimeException("Car not found"));
     }
 
+    public List<Car> getAllCarsByAgencyId(Integer id) {
+        Agency currentAgency = agencyRepo.findByOurUsersId(id).get();
+        return carRepo.findByAgency(currentAgency);
+    }
 
 }

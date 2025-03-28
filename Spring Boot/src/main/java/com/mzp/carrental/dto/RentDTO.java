@@ -22,6 +22,7 @@ public class RentDTO {
     private String carBrand;
     private String carModel;
     private String customerName;
+    private String customerVerificationStatus;
     private String pickUpLocation;
     private String dropOffLocation;
     private String customerPhoneNumber;
@@ -58,7 +59,13 @@ public class RentDTO {
         this.id = id;
     }
 
+    public String getCustomerVerificationStatus() {
+        return customerVerificationStatus;
+    }
 
+    public void setCustomerVerificationStatus(String customerVerificationStatus) {
+        this.customerVerificationStatus = customerVerificationStatus;
+    }
 
     public Long getCarId() {
         return carId;

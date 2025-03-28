@@ -69,6 +69,12 @@ public class UsersManagementService {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailRegex);
 
+        if(usersRepo.existsByEmail(registrationRequest.getEmail())){
+            resp.setStatusCode(400);
+            resp.setMessage("Email already exists");
+            return resp;
+        }
+
         try {
             // Check if email format is valid
             if (!pattern.matcher(registrationRequest.getEmail()).matches()) {
@@ -99,6 +105,7 @@ public class UsersManagementService {
                 if ("Agency".equalsIgnoreCase(ourUsersResult.getRole())) {
                     Agency agency = new Agency();
                     agency.setOurUsers(ourUsersResult);
+
                     agencyRepo.save(agency);
                 } else if ("Customer".equalsIgnoreCase(ourUsersResult.getRole())) {
                     Customer customer = new Customer();
@@ -142,6 +149,7 @@ public class UsersManagementService {
             if(!user.getAccountStatus().equalsIgnoreCase("Active")){
                 response.setStatusCode(400);
                 response.setMessage("Your Account has been "+user.getAccountStatus()+". Please contact related Authority or Admin for further instructions");
+                System.out.println("Account is banned and " + response);
                 return response;
             }
             var jwt = jwtUtils.generateToken(user);

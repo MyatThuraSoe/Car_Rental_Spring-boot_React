@@ -1,5 +1,6 @@
 package com.mzp.carrental.controller.agency;
 
+import com.mzp.carrental.dto.AgencyVerificationDTO;
 import com.mzp.carrental.entity.Verification.AgencyVerification;
 import com.mzp.carrental.service.agency.AgencyVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,22 @@ public class AgencyVerificationController {
                     .body(new UploadResponse(false, e.getMessage(), null));
         }
     }
+
+    @GetMapping("/{agencyId}")
+    public ResponseEntity<AgencyVerificationDTO> getAgencyVerification(@PathVariable Integer agencyId) {
+        System.out.println("Getting Verification for ageny id" + agencyId);
+        try {
+            AgencyVerificationDTO verification = agencyVerificationService.getAgencyVerification(agencyId);
+
+            return ResponseEntity.ok(verification);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new AgencyVerificationDTO(null, null)); // Return empty DTO or handle differently
+        }
+    }
 }
+
+
 
 record UploadResponse(boolean success, String message, AgencyVerification data) {
     public UploadResponse(boolean success, String message) {

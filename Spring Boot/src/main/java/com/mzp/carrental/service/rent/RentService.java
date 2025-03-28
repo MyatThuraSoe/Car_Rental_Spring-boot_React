@@ -83,7 +83,8 @@ public class RentService {
         dto.setCustomerId(rent.getCustomer().getId());
         dto.setStartDate(rent.getStartDate());
         dto.setEndDate(rent.getEndDate());
-
+        dto.setCustomerName(rent.getCustomer().getUsername());
+        dto.setCustomerVerificationStatus(rent.getCustomer().getVerificationStatus().toString());
         dto.setPickUpLocation(rent.getRentalOrder().getPickUpLocation());
         dto.setDropOffLocation(rent.getRentalOrder().getDropOffLocation());
         dto.setIncludeDriver(rent.getRentalOrder().isIncludeDriver());

@@ -147,6 +147,7 @@ public class RentOrderController {
                     dto.setTotalPrice(order.getTotalPrice());
                     dto.setStatus(order.getStatus());
                     dto.setCustomerPhoneNumber(order.getCustomerPhoneNumber());
+                    dto.setCustomerVerificationStatus(order.getCustomer().getVerificationStatus().toString());
                     return dto;
                 })
                 .collect(Collectors.toList());

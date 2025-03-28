@@ -15,6 +15,7 @@ public class RentalOrderDTO {
     private String carModel;
     private Integer customerId;
     private String customerName;
+    private String customerVerificationStatus;
     private LocalDate startDate;
     private LocalDate endDate;
     private String pickUpLocation;
@@ -152,6 +153,14 @@ public class RentalOrderDTO {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getCustomerVerificationStatus() {
+        return customerVerificationStatus;
+    }
+
+    public void setCustomerVerificationStatus(String customerVerificationStatus) {
+        this.customerVerificationStatus = customerVerificationStatus;
     }
 
     @Override
