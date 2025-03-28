@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import CarOrderDetailsModal from "./CarOrderDetailsModal";
 
 import BookingCalendar from "../../components/BookingCalendar";
+import { MdVerified } from "react-icons/md";
 
 const CarOrderList = () => {
   const { id } = useParams();
@@ -128,7 +129,7 @@ const CarOrderList = () => {
         {`
           /* General Styles */
           body {
-            font-family: 'Lato', 'Arial', sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #ffffff; /* White background */
             color: #333; /* Dark gray text */
           }
@@ -219,7 +220,7 @@ const CarOrderList = () => {
         <thead>
           <tr>
             <th>Order ID</th>
-            <th>Customer ID</th>
+            <th>Customer Name</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>PickUp Location</th>
@@ -232,7 +233,7 @@ const CarOrderList = () => {
           {orders.map((order, index) => (
             <tr key={order.id || `order-${index}`}>
               <td>{order.id || "N/A"}</td>
-              <td>{order.customerId || "N/A"}</td>
+              <td>{order.customerName || "N/A"} {order?.customerVerificationStatus == "VERIFIED" ? <MdVerified style={{color:'navy'}}/> : ''}</td>
               <td>{order.startDate || "N/A"}</td>
               <td>{order.endDate || "N/A"}</td>
               <td>{order.pickUpLocation || "N/A"}</td>

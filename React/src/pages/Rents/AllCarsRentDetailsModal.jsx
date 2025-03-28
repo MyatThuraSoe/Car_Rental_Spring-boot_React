@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Button } from "antd";
 import moment from "moment";
 import { useAuth } from "../../context/AuthContext";
+import { MdVerified } from "react-icons/md";
 
 const AllCarsRentDetailsModal = ({ show, handleClose, rent, onMarkOngoing, onMarkCompleted }) => {
   const { authData } = useAuth();
@@ -54,7 +55,7 @@ const AllCarsRentDetailsModal = ({ show, handleClose, rent, onMarkOngoing, onMar
       <h3>Rent Details</h3>
       <p>Car: {rent.carBrand} {rent.carModel}</p>
       <p>Customer ID: {rent.customerId}</p>
-      <p>Customer Name: {rent.customerName || "Unknown"}</p>
+      <p>Customer Name: {rent.customerName || "Unknown"} {rent.customerVerificationStatus == "VERIFIED" ? <MdVerified style={{color:'navy'}}/> : ""}</p>
       <p>Pickup Location: {rent.pickUpLocation}</p>
       <p>Drop-Off Location: {rent.dropOffLocation}</p>
       <p>Customer Phone Number: {rent.customerPhoneNumber}</p>

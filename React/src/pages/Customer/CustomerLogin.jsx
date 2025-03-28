@@ -1,4 +1,4 @@
-import LoginForm from "../../components/LoginForm";
+import MyAccount from "../My Account/MyAccount";
 
-const UserLogin = () => <LoginForm role="Customer" />;
+const UserLogin = () => <MyAccount role="Customer" />;
 export default UserLogin;

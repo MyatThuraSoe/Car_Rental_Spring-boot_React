@@ -13,6 +13,8 @@ import {
   FaCar,
 } from "react-icons/fa";
 import "./CarDetails.css";
+import { MdVerified } from "react-icons/md";
+import { PiCarProfileFill } from "react-icons/pi";
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -35,7 +37,7 @@ const CarDetails = () => {
 
     const fetchCarDetails = async () => {
       try {
-        const carEndpoint =`/view/cars/${id}`;
+        const carEndpoint = `/view/cars/${id}`;
         const carResponse = await axiosInstance.get(carEndpoint);
         const carData = carResponse.data;
         setCar(carData);
@@ -202,10 +204,6 @@ const CarDetails = () => {
             <div className="car-details-title-custom">
               <h2>
                 {car?.year} {car?.brand} {car?.model}
-                {/* <div>
-                  <p>Username: {AgencyData?.username || "N/A"}</p>
-                  <p>Phone: {AgencyData?.phoneNumber || "N/A"}</p>
-                </div> */}
               </h2>
               {/* Rating Section */}
               <div className="car-rating">
@@ -256,15 +254,32 @@ const CarDetails = () => {
           <div className="car-details-specs-custom">
             <div className="car-details-specs-row-custom">
               <span>{car?.year || "N/A"}</span>
-              <span>{car?.mileage || "N/A"} Km</span>
-              <span>{car?.transmission || "N/A"}</span>
-              <span>{car?.fuelType || "N/A"}</span>
-            </div>
-            <div className="car-details-specs-header-custom">
               <span>Year</span>
+            </div>
+
+            <div className="car-details-specs-row-custom">
+              <span>{car?.mileage || "N/A"}</span>
               <span>Mileage</span>
+            </div>
+
+            <div className="car-details-specs-row-custom">
+              <span>{car?.transmission || "N/A"}</span>
               <span>Transmission</span>
+            </div>
+
+            <div className="car-details-specs-row-custom">
+              <span>{car?.fuelType || "N/A"}</span>
               <span>Fuel Type</span>
+            </div>
+
+            <div className="car-details-specs-row-custom">
+              <span>{car?.category || "N/A"}</span>
+              <span>Body Type</span>
+            </div>
+
+            <div className="car-details-specs-row-custom">
+              <span>{car?.seats || "N/A"}</span>
+              <span>Seat</span>
             </div>
           </div>
 
@@ -291,12 +306,10 @@ const CarDetails = () => {
           <hr className="divider-custom" />
 
           {/* own by */}
-          {AgencyData?.id != authData.user.id &&
-          <>
           <div className="owned-by">
             <h3>Owned by</h3>
-            <p>
-              <FaUser /> {AgencyData?.username}
+            <p onClick={()=> navigate(`/page/agency/${AgencyData?.id}`)} style={{ cursor: 'pointer', fontSize: '1.2rem', fontWeight: '900', color: '#000'}} >
+              <FaUser /> {AgencyData?.username} {AgencyData?.verificationStatus === "VERIFIED" ? <MdVerified style={{ color: 'navy' }} /> : ""}
             </p>
             <p>
               <FaPhone /> {AgencyData?.phoneNumber}
@@ -307,34 +320,37 @@ const CarDetails = () => {
             <p>
               <FaMapMarkerAlt /> {AgencyData?.city}, {AgencyData?.address}
             </p>
-            <p>
+            {/* <p>
               <FaCar /> Cars Uploaded: {AgencyData?.totalCar || 0}
-            </p>
+            </p> */}
           </div>
           <hr className="divider-custom" />
-          </>
-          }
 
-          {(authData.role === "Agency" && (AgencyData?.id == authData.user.id )) && (
-            <div className="agency-actions-custom">
-              <button onClick={handleUpdate} className="btn-custom btn-edit">
-                Edit
-              </button>
-              <button onClick={handleDelete} className="btn-custom btn-delete">
-                Delete
-              </button>
-              <button onClick={handleOrder} className="btn-custom btn-orders">
-                Orders
-              </button>
-              <button onClick={handleRents} className="btn-custom btn-rents">
-                Rents
-              </button>
-            </div>
-          )}
+          {authData.role === "Agency" &&
+            AgencyData &&
+            AgencyData.id === authData.user?.id && (
+              <div className="agency-actions-custom">
+                <button onClick={handleUpdate} className="btn-custom btn-edit">
+                  Edit
+                </button>
+                <button onClick={handleOrder} className="btn-custom btn-orders">
+                  Orders
+                </button>
+                <button onClick={handleRents} className="btn-custom btn-rents">
+                  Rents
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="btn-custom btn-delete"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
 
           {authData.role === "Customer" && (
             <button onClick={handleRent} className="customer-rent-btn">
-              Rent This Car
+              <PiCarProfileFill style={{ marginRight: '1rem', transform: 'scale(1.8)'}}/> Rent This Car
             </button>
           )}
 
@@ -346,6 +362,7 @@ const CarDetails = () => {
             onCancel={handleModalClose}
             footer={null}
             centered
+            className="custom-rent-modal"
           >
             <CarOrderForm
               car={car}
@@ -381,7 +398,7 @@ const CarDetails = () => {
                           {recCar.brand} {recCar.model}
                         </h4>
                         <p>Year: {recCar.year}</p>
-                        <p>Price: ${recCar.pricePerDay}</p>
+                        <p>Price: ${recCar.pricePerDay}/day</p>
                         <p>Car Body: {recCar.category}</p>
                       </div>
                     </Link>

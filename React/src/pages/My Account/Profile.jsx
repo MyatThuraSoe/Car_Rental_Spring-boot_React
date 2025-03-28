@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaCar,
+  FaIdCard,
+} from "react-icons/fa";
+import "./Profile.css";
+import { MdCarRental } from "react-icons/md";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
 const Profile = () => {
   const { authData } = useAuth();
   const [details, setDetails] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,21 +32,12 @@ const Profile = () => {
 
     const loadProfile = async () => {
       try {
-        // Fetch profile details
-        const response = await axiosInstance.get(`/${rolePath}/${authData.user.id}`);
+        // Fetch profile details including base64 image data
+        const response = await axiosInstance.get(
+          `/${rolePath}/${authData.user.id}`
+        );
         setDetails(response.data);
         console.log("Profile Data:", response.data);
-
-        // Fetch profile image if available
-        if (response.data.imageName) {
-          console.log("Fetching Profile Image...");
-          const imageResponse = await axiosInstance.get(
-            `/view/${rolePath === "agency" ? "agencies" : "customers"}/${authData.user.id}/image`,
-            { responseType: "blob" }
-          );
-          console.log(imageResponse.data)
-          setProfileImage(URL.createObjectURL(imageResponse.data));
-        }
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load profile.");
       } finally {
@@ -48,129 +49,96 @@ const Profile = () => {
   }, [authData]);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="alert alert-danger">{error}</div>;
+  if (error) return <div className="alert-danger">{error}</div>;
 
   const profileDetails = details && (
-    <>
-      <div><strong>Email:</strong> {authData?.user?.email || "N/A"}</div>
-      <div><strong>Username:</strong> {details.username || "N/A"}</div>
-      <div><strong>Phone:</strong> {details.phoneNumber || "N/A"}</div>
-      <div><strong>City:</strong> {details.city || "N/A"}</div>
+    <div className="profile-details">
+      <div>
+        <FaEnvelope /> <strong>Email:</strong>{" "}
+        <span>{authData?.user?.email || "N/A"}</span>
+      </div>
+      <div>
+        <FaUser /> <strong>Username:</strong>{" "}
+        <span>{details.username || "N/A"}</span>
+      </div>
+      <div>
+        <FaPhoneAlt /> <strong>Phone:</strong>{" "}
+        <span>{details.phoneNumber || "N/A"}</span>
+      </div>
+      <div>
+        <FaMapMarkerAlt /> <strong>City:</strong>{" "}
+        <span>{details.city || "N/A"}</span>
+      </div>
       {authData.role === "Agency" && (
         <>
-          <div><strong>Address:</strong> {details.address || "N/A"}</div>
-          <div><strong>Cars Managed:</strong> {details.cars?.length || 0}</div>
-          <Link to="/agency/profile-update" className="btn btn-primary">Update Profile</Link>
+          <div>
+            <FaMapMarkerAlt /> <strong>Address:</strong>{" "}
+            {details.address || "N/A"}
+          </div>
+          <div>
+            <FaCar />
+            <strong>
+              <Link to="/agency/cars" className="cars-managed">
+                Cars Managed:
+              </Link>
+            </strong>
+            {details.cars?.length || 0}
+          </div>
+          <div>
+            <MdCarRental /> <strong>Total Rents:</strong>{" "}
+            {details.totalRents || "0"}
+          </div>
+          <div>
+            <FaMoneyBillTrendUp /> <strong>Total Revenue:</strong>{" "}
+            {details.totalRevenue || "0"}$
+          </div>
+          <Link to="/agency/profile-update" className="btn btn-primary">
+            <span>Update Profile</span>
+          </Link>
         </>
       )}
       {authData.role === "Customer" && (
         <>
-          <div><strong>Driving License:</strong> {details.drivingLiscene || "N/A"}</div>
-          <Link to="/customer/profile-update" className="btn btn-primary">Update Profile</Link>
+          <div>
+            <FaIdCard /> <strong>Driving License:</strong>{" "}
+            {details.drivingLiscene || "N/A"}
+          </div>
+          <div>
+            <MdCarRental /> <strong>Total Rents:</strong>{" "}
+            {details.totalRents || "0"}
+          </div>
+          <div>
+            <FaMoneyBillTrendUp /> <strong>Total Spending:</strong>{" "}
+            {details.totalSpending || "0"}$
+          </div>
+          <Link to="/customer/profile-update" className="btn btn-primary">
+            <span>Update Profile</span>
+          </Link>
         </>
       )}
-    </>
+    </div>
   );
 
+  // Convert base64 image data to usable src format if it exists
+  const profileImageSrc = details?.imageData
+    ? `data:image/jpeg;base64,${details.imageData}`
+    : null;
+
   return (
-    <div className="container">
+    <div className="profile-container">
       <h1>{authData.role} Profile</h1>
 
       {/* Profile Image */}
       <div className="profile-img-container">
-        {profileImage ? (
-          <img src={profileImage} alt="Profile" className="profile-img"  />
+        {profileImageSrc ? (
+          <img src={profileImageSrc} alt="Profile" className="profile-img" />
         ) : (
           <div className="no-image">No Image</div>
         )}
       </div>
-      
-      {/* <div className="profile-img-container">
-       
-          <img src={ profileImage || "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"} alt="Profile" className="profile-img"  />
-      </div> */}
 
       {/* Profile Details */}
       {profileDetails}
-
-      <style>
-        {`
-          .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          }
-
-          h1 {
-            font-weight: bold;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 1.5rem;
-          }
-
-          .profile-img-container {
-            text-align: center;
-            margin-bottom: 20px;
-          }
-
-          .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #007bff;
-          }
-
-          .no-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-color: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ccc;
-            color: #555;
-          }
-
-          div {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: #555;
-          }
-
-          .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s ease-in-out;
-          }
-
-          .btn-primary {
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-          }
-
-          .btn-primary:hover {
-            background-color: #0056b3;
-          }
-
-          @media (max-width: 768px) {
-            .container {
-              padding: 15px;
-            }
-            div {
-              font-size: 0.9rem;
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };

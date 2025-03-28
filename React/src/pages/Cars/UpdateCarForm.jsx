@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
+import "./UpdateCarForm.css"; // Import your CSS file here
 
 const UpdateCarForm = () => {
   const { id } = useParams();
@@ -84,7 +85,9 @@ const UpdateCarForm = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    Object.entries(carData).forEach(([key, value]) => formData.append(key, value));
+    Object.entries(carData).forEach(([key, value]) =>
+      formData.append(key, value)
+    );
     if (imageFiles.main) formData.append("imageFile", imageFiles.main);
     if (imageFiles.first) formData.append("firstImage", imageFiles.first);
     if (imageFiles.second) formData.append("secondImage", imageFiles.second);
@@ -101,18 +104,16 @@ const UpdateCarForm = () => {
     }
   };
 
-  if (error) return <p className="error">{error}</p>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div className="container">
-      
-
-      <h1 className="title">Update Car</h1>
-      <form onSubmit={handleSubmit} className="form">
-        {/* Car Info Section */}
-        <section className="section">
-          <h2 className="subtitle">Car Details</h2>
-          <div className="grid">
+    <div className="update-car-form-container">
+      <h2>Update Car</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Two-Column Layout */}
+        <div className="update-car-form-columns">
+          {/* Left Column */}
+          <div className="update-car-form-column">
             {[
               { label: "Brand", name: "brand", type: "text" },
               { label: "Model", name: "model", type: "text" },
@@ -121,232 +122,177 @@ const UpdateCarForm = () => {
               { label: "VIN", name: "vin", type: "text" },
               { label: "Mileage", name: "mileage", type: "number" },
               { label: "Color", name: "color", type: "text" },
-              { label: "Category", name: "category", type: "text" },
-              { label: "Fuel Type", name: "fuelType", type: "text" },
-              { label: "Transmission", name: "transmission", type: "text" },
-              { label: "Seats", name: "seats", type: "number" },
-              { label: "Price Per Day", name: "pricePerDay", type: "number" },
             ].map((field) => (
-              <div key={field.name} className="input-group">
-                <label className="label">{field.label}</label>
+              <div key={field.name} className="update-car-form-group">
+                <label>{field.label}</label>
                 <input
                   type={field.type}
                   name={field.name}
                   value={carData[field.name]}
                   onChange={handleChange}
-                  className="input"
+                  className="update-car-form-control"
                   required
                 />
               </div>
             ))}
-            <div className="input-group">
-              <label className="label">Features</label>
-              <input
-                type="text"
+
+            {/* Category Dropdown */}
+            <div className="update-car-form-group">
+              <label>Category</label>
+              <select
+                name="category"
+                value={carData.category}
+                onChange={handleChange}
+                className="update-car-form-control"
+                required
+              >
+                <option value="">Select Category</option>
+                {[
+                  "SUV",
+                  "HATCHBACK",
+                  "SEDAN",
+                  "COUPE",
+                  "CONVERTIBLE",
+                  "TRUCK",
+                  "VAN",
+                  "OTHER",
+                ].map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="update-car-form-column">
+            {/* Fuel Type Dropdown */}
+            <div className="update-car-form-group">
+              <label>Fuel Type</label>
+              <select
+                name="fuelType"
+                value={carData.fuelType}
+                onChange={handleChange}
+                className="update-car-form-control"
+                required
+              >
+                <option value="">Select Fuel Type</option>
+                {["PETROL", "DIESEL", "ELECTRIC", "HYBRID", "OTHER"].map(
+                  (fuel) => (
+                    <option key={fuel} value={fuel}>
+                      {fuel}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+
+            {/* Transmission Dropdown */}
+            <div className="update-car-form-group">
+              <label>Transmission</label>
+              <select
+                name="transmission"
+                value={carData.transmission}
+                onChange={handleChange}
+                className="update-car-form-control"
+                required
+              >
+                <option value="">Select Transmission</option>
+                {["AUTOMATIC", "MANUAL"].map((transmission) => (
+                  <option key={transmission} value={transmission}>
+                    {transmission}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {[
+              { label: "Seats", name: "seats", type: "number" },
+              { label: "Price Per Day", name: "pricePerDay", type: "number" },
+            ].map((field) => (
+              <div key={field.name} className="update-car-form-group">
+                <label>{field.label}</label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={carData[field.name]}
+                  onChange={handleChange}
+                  className="update-car-form-control"
+                  required
+                />
+              </div>
+            ))}
+
+            {/* Features Textarea */}
+            <div className="update-car-form-group">
+              <label>Features (comma separated)</label>
+              <textarea
                 name="features"
                 value={carData.features}
                 onChange={handleChange}
-                className="input"
-              />
+                className="update-car-textarea"
+                rows="3"
+                placeholder="Enter features (comma separated)"
+              ></textarea>
             </div>
-            <div className="input-group-full">
-              <label className="label">Description</label>
+
+            {/* Description Textarea */}
+            <div className="update-car-form-group">
+              <label>Description</label>
               <textarea
                 name="description"
                 value={carData.description}
                 onChange={handleChange}
-                className="textarea"
-                required
+                className="update-car-textarea"
+                rows="5"
+                placeholder="Enter a detailed description"
+              ></textarea>
+            </div>
+
+            <div className="update-car-form-group">
+              <label>Available</label>
+              <input
+                type="checkbox"
+                checked={carData.available}
+                onChange={(e) =>
+                  setCarData({ ...carData, available: e.target.checked })
+                }
               />
             </div>
-            <div>
-                <label>Available</label>
-                <input 
-                    type="checkbox" 
-                    name="available" 
-                    checked={carData.available} 
-                    onChange={(e) => setCarData({...carData, available: e.target.checked})} 
-                />
-            </div>
           </div>
-        </section>
+        </div>
 
         {/* Image Upload Section */}
-        <section className="section">
-          <h2 className="subtitle">Images</h2>
-          <div className="image-grid">
-            {["main", "first", "second", "third"].map((type) => (
-              <div key={type} className="image-group">
-                <label className="label">
-                  {type.charAt(0).toUpperCase() + type.slice(1)} Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(e, type)}
-                  className="file-input"
+        <h3 className="update-car-underline">Images</h3>
+        <div className="update-car-image-upload">
+          {["main", "first", "second", "third"].map((type) => (
+            <div key={type} className="update-car-form-group">
+              <label>
+                {type.charAt(0).toUpperCase() + type.slice(1)} Image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, type)}
+                className="update-car-file-input"
+              />
+              {previewImages[type] && (
+                <img
+                  src={previewImages[type]}
+                  alt={`${type} preview`}
+                  className="update-car-image-preview"
                 />
-                {previewImages[type] && (
-                  <img
-                    src={previewImages[type]}
-                    alt={`${type} Preview`}
-                    className="preview-image"
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
+              )}
+            </div>
+          ))}
+        </div>
 
-        <button type="submit" className="button">
+        {/* Submit Button */}
+        <button type="submit" className="update-car-submit-btn">
           Update Car
         </button>
       </form>
-
-      <style>{`
-        .container {
-          background-color: #fff;
-          max-width: 900px;
-          margin: 0 auto;
-          padding: 40px;
-          border-radius: 8px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .title {
-          color: #000;
-          font-size: 32px;
-          font-weight: bold;
-          text-align: center;
-          margin-bottom: 30px;
-        }
-
-        .form {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .section {
-          padding: 20px;
-          background-color: #f9f9f9;
-          border-radius: 6px;
-        }
-
-        .subtitle {
-          color: #000;
-          font-size: 24px;
-          font-weight: 600;
-          margin-bottom: 20px;
-          border-bottom: 2px solid #ffd700;
-          display: inline-block;
-        }
-
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 20px;
-        }
-
-        .input-group {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .input-group-full {
-          grid-column: 1 / -1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .label {
-          color: #000;
-          font-size: 14px;
-          font-weight: 500;
-          margin-bottom: 8px;
-        }
-
-        .input {
-          padding: 10px;
-          font-size: 16px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          background-color: #fff;
-          color: #000;
-          outline: none;
-          transition: border-color 0.3s;
-        }
-
-        .input:focus {
-          border-color: #ffd700;
-        }
-
-        .textarea {
-          padding: 10px;
-          font-size: 16px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          background-color: #fff;
-          color: #000;
-          min-height: 100px;
-          resize: vertical;
-          outline: none;
-          transition: border-color 0.3s;
-        }
-
-        .textarea:focus {
-          border-color: #ffd700;
-        }
-
-        .image-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 20px;
-        }
-
-        .image-group {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .file-input {
-          margin-bottom: 10px;
-          font-size: 14px;
-          color: #000;
-        }
-
-        .preview-image {
-          max-width: 100%;
-          height: auto;
-          border-radius: 4px;
-          border: 1px solid #ffd700;
-          margin-top: 10px;
-        }
-
-        .button {
-          background-color: #ffd700;
-          color: #000;
-          padding: 12px 20px;
-          font-size: 16px;
-          font-weight: 600;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          align-self: center;
-        }
-
-        .button:hover {
-          background-color: #e6c200;
-        }
-
-        .error {
-          color: #ff0000;
-          text-align: center;
-          font-size: 18px;
-        }
-      `}</style>
     </div>
   );
 };

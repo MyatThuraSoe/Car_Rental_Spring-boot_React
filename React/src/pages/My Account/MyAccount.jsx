@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosInstance from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,40 +11,60 @@ const MyAccount = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [accountInfo, setAccountInfo] = useState({
-    name: "",
     email: "",
     password: "",
     role: "",
   });
-  const [emailError, setEmailError] = useState(""); // New state for email validation
 
-  // Email validation regex
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  // State to track password validation
+  const [passwordValidations, setPasswordValidations] = useState({
+    hasCapitalLetter: false,
+    hasNumber: false,
+    hasSpecialCharacter: false,
+    hasMinLength: false,
+  });
+
+  // State to track registered emails (simulated for frontend-only validation)
+  const [registeredEmails, setRegisteredEmails] = useState([]);
+
+  // Fetch registered emails (simulated here; replace with actual API call if needed)
+  useEffect(() => {
+    // Simulate fetching registered emails from the backend
+    const fetchRegisteredEmails = async () => {
+      // Replace this with an actual API call in a real-world scenario
+      const mockRegisteredEmails = ["test@example.com", "user@gmail.com"];
+      setRegisteredEmails(mockRegisteredEmails);
+      console.log("Registered Emails:", mockRegisteredEmails); // Debugging log
+    };
+
+    fetchRegisteredEmails();
+  }, []);
 
   const handleAccountChange = (e) => {
     const { name, value } = e.target;
     setAccountInfo({ ...accountInfo, [name]: value });
 
-    // Validate email when it changes
-    if (name === "email") {
-      if (!emailRegex.test(value) && value.length > 0) {
-        setEmailError("Please enter a valid email address");
-      } else {
-        setEmailError("");
-      }
+    // Validate password if the field is "password"
+    if (name === "password") {
+      const hasCapitalLetter = /[A-Z]/.test(value); // At least one capital letter
+      const hasNumber = /[0-9]/.test(value); // At least one number
+      const hasSpecialCharacter = /[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/]/.test(
+        value
+      ); // At least one special character
+      const hasMinLength = value.length >= 8; // At least 8 characters
+
+      setPasswordValidations({
+        hasCapitalLetter,
+        hasNumber,
+        hasSpecialCharacter,
+        hasMinLength,
+      });
     }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // Check email validity before submission
-    if (!emailRegex.test(accountInfo.email)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
-
-    setIsLoggingIn(true);
+    setIsLoggingIn(true); // Show loading animation
 
     try {
       const response = await axiosInstance.post(`/auth/login`, {
@@ -52,30 +72,61 @@ const MyAccount = () => {
         password: accountInfo.password,
       });
 
-      login(response.data, response.data.token);
-      toast.success("Login successful! 🎉", { duration: 2000 });
+      // Check if the response contains a valid token
+      if (response.data && response.data.token) {
+        login(response.data, response.data.token);
+        toast.success("Login successful! 🎉", { duration: 2000 });
 
-      setTimeout(() => {
-        setIsLoggingIn(false);
-        navigate("/");
-      }, 2000);
+        setTimeout(() => {
+          setIsLoggingIn(false);
+          navigate("/");
+        }, 2000);
+      } else {
+        throw new Error("Invalid response from server");
+      }
     } catch (err) {
       setIsLoggingIn(false);
-      toast.error("Invalid login credentials ❌");
+
+      let errorMessage = "Email or password is incorrect. Please try again.";
+
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = err.response.data.message; // Use the backend's error message
+      }
+
+      // Display the error message
+      toast.error(errorMessage);
     }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
-    // Check email validity before submission
-    if (!emailRegex.test(accountInfo.email)) {
-      setEmailError("Please enter a valid email address");
-      return;
+
+    // Check if all password requirements are met
+    if (
+      !passwordValidations.hasCapitalLetter ||
+      !passwordValidations.hasNumber ||
+      !passwordValidations.hasSpecialCharacter ||
+      !passwordValidations.hasMinLength
+    ) {
+      return toast.error(
+        "Password must contain at least one capital letter, one number, one special character, and be at least 8 characters long."
+      );
     }
 
+    // Log the registered emails and the entered email for debugging
+    console.log("Registered Emails:", registeredEmails);
+    console.log("Entered Email:", accountInfo.email);
+
+    // Check if the email is already registered
     try {
-      await axiosInstance.post(`/auth/register`, accountInfo);
+      const response = await axiosInstance.post(`/auth/register`, accountInfo);
+      const { statusCode, message, token, role } = response.data;
+
+      if (statusCode !== 200) {
+        toast.error(`❌ ${message}`);
+        setIsLoggingIn(false);
+        return;
+      }
       toast.success("Registration successful! Please log in. ✅", {
         duration: 2000,
       });
@@ -96,7 +147,7 @@ const MyAccount = () => {
 
   return (
     <div className="my-account">
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-right" /> {/* Sonner Toaster */}
       <div className="loginBg"></div>
       <div>
         <div className="auth-container">
@@ -120,22 +171,9 @@ const MyAccount = () => {
                     <option value="Agency">Agency</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="name">Name:</label>
-                  <input
-                    placeholder="John Doe"
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={accountInfo.name}
-                    onChange={handleAccountChange}
-                    required
-                  />
-                </div>
               </>
             )}
-            
+
             <div className="form-group">
               <label htmlFor="email">Email:</label>
               <input
@@ -147,31 +185,71 @@ const MyAccount = () => {
                 onChange={handleAccountChange}
                 required
               />
-              
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={accountInfo.password}
-                onChange={handleAccountChange}
-                required
-              />
+            <div className="form-group password-group">
+              <div
+                style={{ display: "flex", width: "100%", alignItems: "center" }}
+              >
+                <label htmlFor="password">Password:</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={accountInfo.password}
+                  onChange={handleAccountChange}
+                  required
+                />
+              </div>
+              {isRegistering && (
+                <div className="password-validation">
+                  <p
+                    className={
+                      passwordValidations.hasMinLength ? "valid" : "invalid"
+                    }
+                  >
+                    {passwordValidations.hasMinLength ? "✔" : "✘"} At least 8
+                    characters
+                  </p>
+                  <p
+                    className={
+                      passwordValidations.hasCapitalLetter ? "valid" : "invalid"
+                    }
+                  >
+                    {passwordValidations.hasCapitalLetter ? "✔" : "✘"} At least
+                    one capital letter
+                  </p>
+                  <p
+                    className={
+                      passwordValidations.hasNumber ? "valid" : "invalid"
+                    }
+                  >
+                    {passwordValidations.hasNumber ? "✔" : "✘"} At least one
+                    number
+                  </p>
+                  <p
+                    className={
+                      passwordValidations.hasSpecialCharacter
+                        ? "valid"
+                        : "invalid"
+                    }
+                  >
+                    {passwordValidations.hasSpecialCharacter ? "✔" : "✘"} At
+                    least one special character
+                  </p>
+                </div>
+              )}
             </div>
 
-            <button type="submit" disabled={isLoggingIn || emailError}>
+            <button type="submit" disabled={isLoggingIn}>
               {isLoggingIn ? (
-                <div className="spinner"></div>
+                <div className="spinner"></div> // Show spinner during login
               ) : isRegistering ? (
                 "Register"
               ) : (
                 "Login"
               )}
             </button>
-            {emailError && <div className="error-message">{emailError}</div>}
           </form>
 
           <p className="toggle-auth-container">
@@ -184,10 +262,15 @@ const MyAccount = () => {
             >
               {isRegistering ? "Login" : "Register"}
             </button>
-
           </p>
-          {!isRegistering && <button className="toggle-auth" onClick={() => navigate("/forgot-password")}>Forgot Password?</button>}
-
+          {!isRegistering && (
+            <button
+              className="toggle-auth"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot Password?
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -1,38 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Navbar.css";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import mzpLogo from "/mzpLogo.png";
-import { Dropdown } from "react-bootstrap"; // Import Bootstrap dropdown
+import { Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
   faSignInAlt,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import AgencyNotification from "../AgencyNotification";
-import CustomerNotification from "../CustomerNotification";
+import axiosInstance from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
-
-  const handleToggle = () => {
-    setIsMobile(!isMobile);
-  };
+  const handleToggle = () => setIsMobile(!isMobile);
 
   // Close menu after clicking a link
-  const handleCloseMenu = () => {
-    setIsMobile(false);
-  };
+  const handleCloseMenu = () => setIsMobile(false);
 
   const getLinkClassName = (path) => {
     return location.pathname === path ? "active-link-custom" : "";
   };
 
   const { authData, logout } = useAuth();
+  const [userProfile, setUserProfile] = useState(null); // State to store user profile data
   const navigate = useNavigate();
+
+  // Fetch user profile data (customer or agency)
+  const fetchUserProfile = async () => {
+    try {
+      if (!authData.token || !authData.role || !authData.user?.id) {
+        console.warn("User information is missing. Cannot fetch profile.");
+        return;
+      }
+
+      const rolePath = authData.role.toLowerCase(); // "agency" or "customer"
+      const response = await axiosInstance.get(
+        `/${rolePath}/${authData.user.id}`
+      );
+      console.log("Fetched Profile Data:", response.data);
+      setUserProfile(response.data); // Store profile data in state
+    } catch (error) {
+      console.error("Error fetching user profile data:", error);
+    }
+  };
+
+  // Fetch user profile when the component mounts
+  useEffect(() => {
+    if (
+      authData.token &&
+      (authData.role === "Customer" || authData.role === "Agency")
+    ) {
+      fetchUserProfile();
+    }
+  }, [authData.token, authData.role, authData.user?.id]);
 
   const handleLogout = () => {
     logout();
@@ -44,7 +67,7 @@ const Navbar = () => {
     <>
       <nav className="navbar-custom">
         <Link className="logo-custom" to="/" onClick={handleCloseMenu}>
-          <img src={mzpLogo} alt="MZP Logo" width="100px" height="60px" />
+          <img src="/mzpLogo.png" alt="MZP Logo" width="100px" height="60px" />
         </Link>
         <div className="hamburger-custom" onClick={handleToggle}>
           <span className="bar-custom"></span>
@@ -52,7 +75,6 @@ const Navbar = () => {
           <span className="bar-custom"></span>
         </div>
         <ul className={`nav-links-custom ${isMobile ? "active" : ""}`}>
-          
           <li>
             <Link
               className={getLinkClassName("/")}
@@ -62,7 +84,6 @@ const Navbar = () => {
               Home
             </Link>
           </li>
-          {/* )} */}
           <li>
             <Link
               className={getLinkClassName("/cars")}
@@ -90,12 +111,11 @@ const Navbar = () => {
               Contact Us
             </Link>
           </li>
-
           {!authData.token ? (
             <li className="nav-item-custom">
               <Link
                 className="nav-link-custom"
-                to="/account"
+                to="/agency/login"
                 onClick={handleCloseMenu}
               >
                 <FontAwesomeIcon icon={faSignInAlt} className="login-icon" />{" "}
@@ -108,14 +128,15 @@ const Navbar = () => {
                 <Dropdown.Toggle
                   variant="light"
                   id="dropdown-basic"
-                  className="dropdown-toggle-custom"
-                >
-                  <FontAwesomeIcon icon={faUser} className="user-icon" />
+                  className="dropdown-toggle-custom" style={{borderRadius: '50%'}}
+                ><FontAwesomeIcon icon={faUser} className="user-icon" />
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu className="dropdown-menu-custom">
                   {authData.role === "Customer" && (
                     <>
+                      <Dropdown.Item className="dropdown-item-profile-name">
+                        {userProfile?.username || "Profile"}
+                      </Dropdown.Item>
                       <Dropdown.Item
                         as={Link}
                         to="/customer/profile"
@@ -142,7 +163,7 @@ const Navbar = () => {
                       </Dropdown.Item>
                       <Dropdown.Item
                         as={Link}
-                        to="/customer/upload-verification"
+                        to="/customer/verification-form"
                         className="dropdown-item-custom"
                         onClick={handleCloseMenu}
                       >
@@ -194,55 +215,24 @@ const Navbar = () => {
                       </Dropdown.Item>
                       <Dropdown.Item
                         as={Link}
-                        to="/agency/upload-verification"
+                        to="/agency/verification-form"
                         className="dropdown-item-custom"
                         onClick={handleCloseMenu}
                       >
                         Verification
                       </Dropdown.Item>
+                      
                     </>
                   )}
                   {authData.role === "Admin" && (
                     <>
                       <Dropdown.Item
                         as={Link}
-                        to="/admin/manageUsers"
+                        to="/admin/dashboard"
                         className="dropdown-item-custom"
                         onClick={handleCloseMenu}
                       >
-                        Manage Users
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        as={Link}
-                        to="/admin/agency-stats"
-                        className="dropdown-item-custom"
-                        onClick={handleCloseMenu}
-                      >
-                        Agency Status
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        as={Link}
-                        to="/admin/feedback"
-                        className="dropdown-item-custom"
-                        onClick={handleCloseMenu}
-                      >
-                        Admin Feedback
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        as={Link}
-                        to="/admin/agency-verification-list"
-                        className="dropdown-item-custom"
-                        onClick={handleCloseMenu}
-                      >
-                        Agency Verification
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        as={Link}
-                        to="/admin/customer-verification-list"
-                        className="dropdown-item-custom"
-                        onClick={handleCloseMenu}
-                      >
-                        Customer Verification
+                        Dashboard
                       </Dropdown.Item>
                     </>
                   )}
@@ -250,7 +240,6 @@ const Navbar = () => {
                     onClick={handleLogout}
                     className="dropdown-item-custom"
                   >
-                    {" "}
                     <span className="logout-text">Logout </span>
                     <FontAwesomeIcon
                       icon={faSignOutAlt}
@@ -263,14 +252,6 @@ const Navbar = () => {
           )}
         </ul>
       </nav>
-
-      {/* Add Notifications */}
-      {authData.role === "Agency" && (
-        <AgencyNotification agencyId={authData.user.id} />
-      )}
-      {authData.role === "Customer" && (
-        <CustomerNotification customerId={authData.user.id} />
-      )}
     </>
   );
 };

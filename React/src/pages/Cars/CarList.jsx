@@ -23,32 +23,32 @@ const CarList = () => {
   const [cars, setCars] = useState([]);
   const [carImages, setCarImages] = useState({});
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(() => {
-    return getStoredValue("currentPage", 1);
-  });
-  const [searchTerm, setSearchTerm] = useState(() => {
-    return getStoredValue("searchTerm", "");
-  });
-  const [make, setMake] = useState(() => {
-    return getStoredValue("make", "");
-  });
-  const [model, setModel] = useState(() => {
-    return getStoredValue("model", "");
-  });
-  const [category, setCategory] = useState(() => {
-    return getStoredValue("category", "");
-  });
-  const [minYear, setMinYear] = useState(() => {
-    return getStoredValue("minYear", "");
-  });
-  const [maxYear, setMaxYear] = useState(() => {
-    return getStoredValue("maxYear", "");
-  });
-  const [priceRange, setPriceRange] = useState(() => {
-    return getStoredValue("priceRange", { min: 0, max: 1000 });
-  });
 
-  const itemsPerPage = 3;
+  // Dynamic dropdown options
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]); // All models (flattened)
+  const [makeModelMap, setMakeModelMap] = useState({}); // Map of makes to models
+  const [categories, setCategories] = useState([]);
+
+  // Selected filters
+  const [make, setMake] = useState(() => getStoredValue("make", ""));
+  const [model, setModel] = useState(() => getStoredValue("model", ""));
+  const [category, setCategory] = useState(() =>
+    getStoredValue("category", "")
+  );
+  const [minYear, setMinYear] = useState(() => getStoredValue("minYear", ""));
+  const [maxYear, setMaxYear] = useState(() => getStoredValue("maxYear", ""));
+  const [priceRange, setPriceRange] = useState(() =>
+    getStoredValue("priceRange", { min: 0, max: 1000 })
+  );
+  const [currentPage, setCurrentPage] = useState(() =>
+    getStoredValue("currentPage", 1)
+  );
+  const [searchTerm, setSearchTerm] = useState(() =>
+    getStoredValue("searchTerm", "")
+  );
+
+  const itemsPerPage = 8; // Adjust this value as needed
   const navigate = useNavigate();
 
   // Fetch cars and images when the component mounts
@@ -57,12 +57,35 @@ const CarList = () => {
       try {
         const data = await fetchAllCars();
         setCars(data);
+        
+        // Extract unique makes, models, and categories
+        const uniqueMakes = [...new Set(data.map((car) => car.brand))];
+        const uniqueCategories = [...new Set(data.map((car) => car.category))];
+
+        // Create a map of makes to their models
+        const makeModelMap = {};
+        data.forEach((car) => {
+          if (!makeModelMap[car.brand]) {
+            makeModelMap[car.brand] = new Set(); // Use Set to avoid duplicates
+          }
+          makeModelMap[car.brand].add(car.model);
+        });
+
+        // Convert Sets to arrays for easier rendering
+        const processedMap = {};
+        Object.keys(makeModelMap).forEach((make) => {
+          processedMap[make] = [...makeModelMap[make]];
+        });
+
+        setMakes(uniqueMakes);
+        setCategories(uniqueCategories);
+        setMakeModelMap(processedMap);
+        setModels(Object.values(makeModelMap).flat()); // Flatten all models
         fetchCarImages(data);
       } catch (err) {
         setError("Failed to load cars.");
       }
     };
-
     loadCars();
   }, []);
 
@@ -122,6 +145,25 @@ const CarList = () => {
     localStorage.setItem("currentPage", pageNumber);
   };
 
+  // Helper function to calculate visible page range
+  const MAX_VISIBLE_PAGES = 5; // Maximum number of pages to display at once
+  const getVisiblePages = (currentPage, totalPages) => {
+    const halfMaxVisible = Math.floor(MAX_VISIBLE_PAGES / 2);
+
+    let startPage = Math.max(1, currentPage - halfMaxVisible);
+    let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
+
+    // Adjust startPage if endPage is at the boundary
+    if (endPage === totalPages) {
+      startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1);
+    }
+
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i
+    );
+  };
+
   // Save filter values to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("searchTerm", JSON.stringify(searchTerm));
@@ -132,71 +174,6 @@ const CarList = () => {
     localStorage.setItem("maxYear", JSON.stringify(maxYear));
     localStorage.setItem("priceRange", JSON.stringify(priceRange));
   }, [searchTerm, make, model, category, minYear, maxYear, priceRange]);
-
-  // Hardcoded dropdown options
-  const hardcodedMakes = [
-    "Toyota",
-    "Honda",
-    "Ford",
-    "Chevrolet ",
-    "Tesla",
-    "BMW",
-    "Mercedes-Benz",
-    "Nissan",
-    "Audi",
-    "Hyundai",
-    "Mazda",
-    "Subaru",
-    "Lexus",
-    "Kia",
-    "Volkswagen",
-    "Jeep",
-    "Chrysler",
-    "GMC",
-  ];
-  const hardcodedModels = [
-    "Malibu",
-    "Vitz",
-    "Corolla",
-    "Civic",
-    "Mustang",
-    "Tahoe",
-    "Model S",
-    "X5",
-    "C-Class",
-    "Altima",
-    "Q7",
-    "Elantra",
-    "Camry",
-    "F-150",
-    "Impala",
-    "CX-5",
-    "Accord",
-    "Optima",
-    "Outback",
-    "RX",
-    "Malibu",
-    "3 Series",
-    "Golf",
-    "Model 3",
-    "Escape",
-    "Wrangler",
-    "A4",
-    "Santa Fe",
-    "Rogue",
-    "Highlander",
-    "Mazda3",
-    "Pacifica",
-    "Sierra",
-  ];
-  const hardcodedCategories = [
-    "Sedan",
-    "Coupe",
-    "SUV",
-    "Truck",
-    "Hatchback",
-    "Minivan",
-  ];
 
   const handleMinPriceChange = (e) => {
     const value = Number(e.target.value);
@@ -211,7 +188,7 @@ const CarList = () => {
       setPriceRange((prev) => ({ ...prev, max: value }));
     }
   };
-
+  
   return (
     <>
       <div className="filter-container">
@@ -222,47 +199,57 @@ const CarList = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
-
         <div className="filter-bar">
+          {/* Dynamic Makes Dropdown */}
           <select
             value={make}
-            onChange={(e) => setMake(e.target.value)}
+            onChange={(e) => {
+              setMake(e.target.value);
+              setModel(""); // Reset model when make changes
+            }}
             className="dropdown"
           >
             <option value="">All Makes</option>
-            {hardcodedMakes.map((make, index) => (
+            {makes.map((make, index) => (
               <option key={index} value={make}>
                 {make}
               </option>
             ))}
           </select>
-
+          {/* Dynamic Models Dropdown */}
           <select
             value={model}
             onChange={(e) => setModel(e.target.value)}
             className="dropdown"
           >
             <option value="">All Models</option>
-            {hardcodedModels.map((model, index) => (
-              <option key={index} value={model}>
-                {model}
-              </option>
-            ))}
+            {make
+              ? makeModelMap[make]?.map((model, index) => (
+                  <option key={index} value={model}>
+                    {model}
+                  </option>
+                ))
+              : Object.values(makeModelMap) // Flatten all models if no make is selected
+                  .flat()
+                  .map((model, index) => (
+                    <option key={index} value={model}>
+                      {model}
+                    </option>
+                  ))}
           </select>
-
+          {/* Dynamic Categories Dropdown */}
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="dropdown"
           >
             <option value="">All Categories</option>
-            {hardcodedCategories.map((type, index) => (
+            {categories.map((type, index) => (
               <option key={index} value={type}>
                 {type}
               </option>
             ))}
           </select>
-
           <div className="year-dropdown">
             <label>Year:</label>
             <select
@@ -277,7 +264,6 @@ const CarList = () => {
                 </option>
               ))}
             </select>
-
             <select
               value={maxYear}
               onChange={(e) => setMaxYear(e.target.value)}
@@ -291,13 +277,11 @@ const CarList = () => {
               ))}
             </select>
           </div>
-
           {/* Price Range with Input Boxes and Slider */}
           <div className="price-range">
             <label>
               Price Range: ${priceRange.min} - ${priceRange.max}
             </label>
-
             <div className="range-inputs">
               <input
                 type="number"
@@ -316,7 +300,6 @@ const CarList = () => {
                 className="price-input"
               />
             </div>
-
             <div className="range-slider">
               <input
                 type="range"
@@ -342,12 +325,12 @@ const CarList = () => {
           </div>
         </div>
       </div>
-
       <div className="car-list">
         <h1>Car List</h1>
+        <h4>Total Cars: {filteredCars.length}</h4>
         {error && <p className="error-message">{error}</p>}
         {cars.length === 0 ? (
-          <p>No cars available at the moment</p>
+          <p>LOADING</p>
         ) : filteredCars.length === 0 ? (
           <p>No cars match your filter criteria.</p>
         ) : (
@@ -375,35 +358,82 @@ const CarList = () => {
                         {car.brand} {car.model}
                       </h3>
                       <p>Year: {car.year}</p>
-                      <p>Price: ${car.pricePerDay}</p>
+                      <p>Price: ${car.pricePerDay}/day</p>
                     </div>
                   </div>
                 </Link>
               ))}
             </div>
-
             {/* Pagination Controls */}
             <div className="pagination">
+              {/* Jump to First Page Button */}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(1)}
+                className="carlist-first"
+                style={{
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  transition: "opacity 0.3s ease-in-out",
+                }}
+              >
+                First
+              </button>
+
+              {/* Previous Button */}
               <button
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
+                className="carlist-prev"
+                style={{
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  transition: "opacity 0.3s ease-in-out",
+                }}
               >
                 Previous
               </button>
-              {Array.from({ length: totalPages }, (_, index) => (
+
+              {/* Dynamic Page Buttons */}
+              {getVisiblePages(currentPage, totalPages).map((pageNumber) => (
                 <button
-                  key={index + 1}
-                  className={currentPage === index + 1 ? "active" : ""}
-                  onClick={() => handlePageChange(index + 1)}
+                  key={pageNumber}
+                  className={currentPage === pageNumber ? "active" : ""}
+                  onClick={() => handlePageChange(pageNumber)}
+                  id="page-button"
+                  style={{
+                    transform:
+                      currentPage === pageNumber ? "scale(1.1)" : "scale(1)",
+                    transition:
+                      "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+                  }}
                 >
-                  {index + 1}
+                  {pageNumber}
                 </button>
               ))}
+
+              {/* Next Button */}
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
+                className="carlist-next"
+                style={{
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  transition: "opacity 0.3s ease-in-out",
+                }}
               >
                 Next
+              </button>
+
+              {/* Jump to Last Page Button */}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(totalPages)}
+                className="carlist-last"
+                style={{
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  transition: "opacity 0.3s ease-in-out",
+                }}
+              >
+                Last
               </button>
             </div>
           </>

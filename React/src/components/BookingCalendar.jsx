@@ -101,33 +101,34 @@ const BookingCalendar = ({ rentedDates, onDateSelect }) => {
           flex-direction: column;
           align-items: center;
           margin-top: 20px;
+          border-radius: 10px;
         }
         .react-calendar__tile {
-          background-color: #c8f7c5 !important; /* Green background */
+          background-color:rgb(255, 255, 255) !important; /* Green background */
           color: black !important; /* Black font color for visibility */
         }
         .rented {
-          background-color: #ffe6e6 !important; /* Red background for rented dates */
-          color: red !important; /* Red font color for rented dates */
+          background-color:rgb(139, 56, 56) !important; /* Red background for rented dates */
+          color: white !important; /* Red font color for rented dates */
         }
         .before-today {
           background-color: #d3d3d3 !important; /* Gray background for dates before today */
           color: gray !important; /* Gray font color for dates before today */
           pointer-events: none; /* Disable click events for these tiles */
         }
-        .react-calendar__tile--now {
-          background:rgb(227, 248, 227) !important;
-          color: black !important; /* Ensure now date is visible */
-        }
+        // .react-calendar__tile--now {
+        //   background:rgb(227, 248, 227) !important;
+        //   color: black !important; /* Ensure now date is visible */
+        // }
         .react-calendar__tile--active {
-          background: #007bff !important;
+          background:rgb(0, 64, 132) !important;
           color: white !important;
         }
         .react-calendar__navigation button {
           color: #007bff;
         }
         .react-calendar__tile--hover {
-          background-color: #d6f5d6 !important;
+          background-color:rgb(127, 180, 249) !important;
         }
         .before-today {
           background-color: #d3d3d3 !important; /* Gray background for dates before today */

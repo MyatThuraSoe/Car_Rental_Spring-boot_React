@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import AgencyRentListDetailsModal from "./AllCarsRentDetailsModal";
 import moment from "moment";
 import AllCarsRentDetailsModal from "./AllCarsRentDetailsModal";
+import { MdVerified } from "react-icons/md";
 
 const AllCarsRentList = () => {
   const [rents, setRents] = useState([]);
@@ -89,7 +90,7 @@ const AllCarsRentList = () => {
 
   return (
     <div className="container">
-      <h2>Active Rents for Your Cars</h2>
+      <h2>Rents for Your Cars</h2>
 
       {/* ✅ Show car image above table
       {selectedRent && (
@@ -111,7 +112,7 @@ const AllCarsRentList = () => {
               <th>Rent ID</th>
               <th></th>
               <th>Car</th>
-              <th>Customer ID</th>
+              <th>Customer Name</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th>Status</th>
@@ -131,7 +132,7 @@ const AllCarsRentList = () => {
                   />
                 </td>
                 <td>{rent.carBrand} {rent.carModel}</td>
-                <td>{rent.customerId}</td>
+                <td>{rent.customerName || "N/A"} {rent?.customerVerificationStatus == "VERIFIED" ? <MdVerified style={{color:'navy'}}/> : ''}</td>
                 <td>{moment(rent.startDate).format("YYYY-MM-DD")}</td>
                 <td>{moment(rent.endDate).format("YYYY-MM-DD")}</td>
                 <td style={getStyle(rent.rentStatus)}>{rent.rentStatus}</td>
@@ -156,6 +157,10 @@ const AllCarsRentList = () => {
 
       <style>
         {`
+          .container {
+            min-height: 80vh;
+            padding: 20px;
+          }
           h2 {
             color: #333;
             text-align: center;
@@ -186,7 +191,7 @@ const AllCarsRentList = () => {
 
           th {
             background-color:rgb(0, 0, 0);
-            color: orange;
+            color: white;
             font-weight: bold;
           }
 
@@ -195,7 +200,7 @@ const AllCarsRentList = () => {
           }
 
           .btn-primary {
-            background-color: #007bff;
+            background-color: navy;
             color: white;
             border: none;
             padding: 8px 16px;
