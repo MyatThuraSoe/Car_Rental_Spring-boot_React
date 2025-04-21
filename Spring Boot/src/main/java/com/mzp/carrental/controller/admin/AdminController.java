@@ -20,6 +20,8 @@ public class AdminController {
         return adminService.getAgencyStats();
     }
 
+    //api for most rented cars
+    
     // api for customer list to verify add pagination to 10, add verification status of pending as param
 
     // api for agency list to verify add pagination to 10, add verification status of pending as param
