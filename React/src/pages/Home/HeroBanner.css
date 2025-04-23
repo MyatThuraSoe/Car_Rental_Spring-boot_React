@@ -1,119 +1,190 @@
+/* General Reset */
+body {
+  margin: 0;
+  font-family: Prata, serif;
+}
+
+/* Hero Banner */
 .hero-banner {
-    height: 400px;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 20px;
-    color: #333;
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
 }
-.search-section {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
-.search-section .title{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+.overlay-text {
+  position: relative;
+  max-width: 600px;
+  margin-left: 10vw;
 }
-.search-section .title span{
-    font-size: small;
+
+.overlay-text h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeIn 1s ease forwards;
 }
-.search-section h2 {
-    margin-bottom: 5px;
+
+.overlay-text p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeIn 1.5s ease forwards;
 }
-.search-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+
+.cta-buttons {
+  display: flex;
+  gap: 15px;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeIn 2s ease forwards;
 }
-.location-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
-.date-time {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;;
+
+.secondary-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #f0c040;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-.date-input {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+
+.secondary-btn:hover {
+  background-color: #f0c040;
+  color: #333;
 }
-.date-input input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-input:focus {
-    outline: none;
-    border-color: none;
-}
-.options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.search-button {
-    background-color: #f0c040;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
-.search-button:hover {
-    background-color: #d89b30;
-}
+
+/* Popular Brands Section */
 .pupular-brands {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
 }
+
 .pupular-brands h2 {
-    font-weight: 400;
-    margin-top: 10px;
+  font-weight: 400;
+  margin-top: 10px;
 }
+
+/* ✅ Keep this layout for desktop (≥ 1024px) */
 .car-logos {
-    /* background-color: white; */
+  display: flex;
+  gap: 32px;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.car-logo-container {
+  border: 1px solid #e0e0e0;
+  height: 150px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.car-logo-container:hover {
+  transform: scale(1.05);
+  border: 2px solid #afabab;
+}
+
+.car-logo {
+  background-color: white;
+  height: 145px;
+  width: 145px;
+  object-fit: contain;
+}
+
+/* 📱 Responsive: Change to Horizontal Scroll ONLY on Small Screens */
+@media (max-width: 1024px) {
+  .car-logos {
     display: flex;
     overflow-x: auto;
-    gap: 32px;
-    padding: 5px;
-    justify-content: center;
-    align-items: center;
-    
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .car-logo-container {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    height: 120px;
+    width: 120px;
+  }
+
+  .car-logo {
+    height: 110px;
+    width: 110px;
+  }
 }
-.car-logo-container{
-    border: 1px solid #e0e0e0;
-    height: 150px;
-    width: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+@media (max-width: 768px) {
+  .car-logo-container {
+    height: 100px;
+    width: 100px;
+  }
+
+  .car-logo {
+    height: 90px;
+    width: 90px;
+  }
 }
-.car-logo-container:hover {
-    border: 2px solid #afabab;
-}
-.car-logo-container .car-logo:hover{
-    transform: scale(1.1);
-    transition: all 0.2s ease-in-out;
-}
-.car-logo {
-    background-color: white;
-    height: 145px;
-    width: 145px;
-    object-fit: contain;
-    cursor: pointer;
+
+@media (max-width: 480px) {
+  .pupular-brands {
+    padding: 15px;
+  }
+
+  .pupular-brands h2 {
+    font-size: 1.5rem;
+  }
+
+  .car-logos {
+    gap: 10px;
+  }
+
+  .car-logo-container {
+    height: 80px;
+    width: 80px;
+  }
+
+  .car-logo {
+    height: 70px;
+    width: 70px;
+  }
 }

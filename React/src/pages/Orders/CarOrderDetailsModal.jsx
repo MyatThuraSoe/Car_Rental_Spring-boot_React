@@ -31,7 +31,7 @@ const CarOrderDetailsModal = ({ visible, onClose, order, onApprove, onDeny, onCa
           )
         ) : (
           <>
-            <Button key="deny" onClick={() => onDeny(order.id)} danger disabled={order.status != 'DENIED' ? false : true}>
+            <Button key="deny" onClick={() => onDeny(order.id)} danger disabled={order.status == 'APPROVED' ? false : true}>
               Deny
             </Button>
             <Button key="approve" onClick={() => onApprove(order.id)} type="primary" disabled={order.status == 'PENDING' ? false : true}>

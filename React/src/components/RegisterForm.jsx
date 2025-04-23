@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 const RegisterForm = ({ role }) => {
     const [formData, setFormData] = useState({ email: "", password: "", name: "" });
     const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(""); // State to store error message
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Use useNavigate hook for navigation
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,74 +13,62 @@ const RegisterForm = ({ role }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // Clear previous error messages
         try {
-            const resp = await axiosInstance.post(`/auth/register`, { ...formData, role });
+            await axiosInstance.post(`/auth/register`, { ...formData, role });
+            setSuccess(true);
 
-            if (resp.data.statusCode === 200) {
-                setSuccess(true);
-                alert(resp.data.message);
-
-                // Navigate to login page based on role
-                if (role.toUpperCase() === "CUSTOMER") {
-                    navigate("/customer/login");
-                } else if (role.toUpperCase() === "AGENCY") {
-                    navigate("/agency/login");
-                } else if (role.toUpperCase() === "ADMIN") {
-                    navigate("/admin/login");
-                }
-            } else if (resp.data.statusCode === 400) {
-                setError(resp.data.message); // Set error message
-                setFormData({ ...formData, email: "" }); // Reset email field
+            // Navigate to login page based on role
+            if (role.toUpperCase() === "CUSTOMER") {
+                navigate("/customer/login");
+            } else if (role.toUpperCase() === "AGENCY") {
+                navigate("/agency/login");
             }
         } catch (err) {
             console.error("Registration failed:", err);
-            setError("An unexpected error occurred. Please try again.");
         }
     };
 
     return (
-        <div>
+        <form onSubmit={handleSubmit}>
             <h2>{role} Register</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error message */}
-            {success && <p>Registration successful!</p>}
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Name:
-                    <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    Email:
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    Password:
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <br />
-                <button type="submit" className="btn btn-primary">Register</button>
-                <style>
-//             {`
+            {success && <div className="alert alert-success">Registration successful!</div>}
+            <div className="mb-3">
+                <label>Name</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            <div className="mb-3">
+                <label>Email</label>
+                <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            <div className="mb-3">
+                <label>Password</label>
+                <input
+                    type="password"
+                    className="form-control"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            <button type="submit" className="btn btn-primary">Register</button>
+
+            <style>
+            {`
             /* General Styles */
             body {
                 font-family: 'Arial', sans-serif;
@@ -181,9 +168,8 @@ const RegisterForm = ({ role }) => {
                 }
             }
             `}
-//         </style>
-            </form>
-        </div>
+        </style>
+        </form>
     );
 };
 

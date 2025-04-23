@@ -75,7 +75,7 @@ const AllCarsOrderDetailsModal = ({ show, handleClose, order, onApprove, onDeny,
             open={show}
             onCancel={handleClose}
             footer={[
-                <Button key="deny" onClick={handleDeny} danger disabled={order.status != 'DENIED' ? false : true}>
+                <Button key="deny" onClick={handleDeny} danger disabled={order.status == 'APPROVED' ? false : true}>
                     Deny
                 </Button>,
                 <Button key="approve" onClick={handleApprove} type="primary" disabled={order.status == 'PENDING' ? false : true}>
@@ -107,7 +107,7 @@ const AllCarsOrderDetailsModal = ({ show, handleClose, order, onApprove, onDeny,
             )}
 
             <h3>Order Details</h3>
-            <p>Customer Name: {order?.customer?.username || 'N/A'}</p>
+            <p>Customer Name: {order?.customerName || 'N/A'}</p>
             <p>Customer Phone Number: {order.customerPhoneNumber || 'N/A'}</p>
             <p>Start Date: {moment(order.startDate).format('YYYY-MM-DD')}</p>
             <p>End Date: {moment(order.endDate).format('YYYY-MM-DD')}</p>

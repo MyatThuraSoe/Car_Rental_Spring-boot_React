@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
-import RentsForACarDetailsModal from "./CarRentDetailsModal"; // ✅ Import new modal
+// import RentsForACarDetailsModal from "./CarRentDetailsModal"; // ✅ Import new modal
 import CarRentDetailsModal from "./CarRentDetailsModal";
+import { MdVerified } from "react-icons/md";
 
 const CarRentList = () => {
   const { id } = useParams(); // Car ID from the URL
@@ -163,7 +164,7 @@ const CarRentList = () => {
         <thead>
           <tr>
             <th>Car ID</th>
-            <th>Customer ID</th>
+            <th>Customer Name</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Status</th>
@@ -174,7 +175,7 @@ const CarRentList = () => {
           {rents.map((rent, index) => (
             <tr key={rent.id || `rent-${index}`}>
               <td>{rent.carId || "N/A"}</td>
-              <td>{rent.customerId || "N/A"}</td>
+              <td>{rent.customerName || "N/A"} {rent?.customerVerificationStatus == "VERIFIED" ? <MdVerified style={{color:'navy'}}/> : ''}</td>
               <td>{rent.startDate || "N/A"}</td>
               <td>{rent.endDate || "N/A"}</td>
               <td>{rent.rentStatus || "N/A"}</td>
@@ -196,7 +197,7 @@ const CarRentList = () => {
         onComplete={(rentId) => handleStatusChange(rentId, "COMPLETED")}
       />
 
-      <button className="btn btn-secondary mt-4" onClick={() => navigate(`/`)}>
+      <button className="btn btn-secondary mt-4" onClick={() => navigate(`/cars/${id}`)}>
         Back
       </button>
     </div>

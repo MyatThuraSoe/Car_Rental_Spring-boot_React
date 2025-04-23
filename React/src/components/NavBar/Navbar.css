@@ -77,7 +77,12 @@
 .navbar-custom .dropdown-custom {
     position: relative;
     border-radius: 50%;
-    padding: 6px 2px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center; */
+    /* padding: 6px 2px; */
+
 }
 
 .navbar-custom .dropdown-toggle-custom {
@@ -88,11 +93,17 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    width: 2rem;
+    height: 2rem;
+    margin: auto;
 }
 
 .navbar-custom .dropdown-toggle-custom:hover {
     color: #f0c040;
 }
+
 
 .navbar-custom .dropdown-menu-custom {
     display: none;
@@ -105,11 +116,27 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     min-width: 160px;
-    margin-top: 10px;
+   
+    
+    
 }
 
 .navbar-custom .dropdown-menu-custom.show {
     display: block;
+    margin-top: 25px;
+    /* transition: ease-in 1s; */
+}
+
+.dropdown-menu-custom .dropdown-item-profile-name {
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+    font-weight: bolder;
+    background-color: #f0c040;
+    border-radius: 0%;
+    cursor: default;
 }
 
 .navbar-custom .dropdown-item-custom {

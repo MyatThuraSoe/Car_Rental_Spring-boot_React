@@ -17,6 +17,7 @@ export default function StatisticsBanner() {
 
     fetchStats();
   }, []);
+  
 
   return (
     <div

@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 
-const AgencyVerificationForm = () => {
+const CustomerVerificationForm = () => {
     const { authData } = useAuth();
     const [formData, setFormData] = useState({
-        agencyId: authData?.user?.id || '',
+        customerId: authData?.user?.id || '',
         nrc: '',
         nrcPhotoFront: null,
-        nrcPhotoBack: null,
-        agencyLicenseFront: null,
-        agencyLicenseBack: null,
+        nrcPhotoBack: null
     });
     const [verification, setVerification] = useState(null);
     const [isVerified, setIsVerified] = useState(false);
@@ -21,13 +19,13 @@ const AgencyVerificationForm = () => {
     useEffect(() => {
         const fetchVerification = async () => {
             if (!authData?.user?.id) {
-                setError('No agency ID available. Please log in.');
+                setError('No customer ID available. Please log in.');
                 return;
             }
             try {
                 setLoading(true);
                 setError(null);
-                const response = await axiosInstance.get(`/agency/verification/${authData.user.id}`);
+                const response = await axiosInstance.get(`/customer/verification/${authData.user.id}`);
                 const verificationData = response.data;
                 setVerification(verificationData);
                 setIsVerified(verificationData?.verificationStatus === 'VERIFIED');
@@ -51,7 +49,7 @@ const AgencyVerificationForm = () => {
                 }
             } catch (error) {
                 console.error('Error fetching verification:', error);
-                setError(error.response?.data?.message || 'You have not submitted verification data yet.');
+                // setError(error.response?.data?.message || 'Failed to load verification status.');
             } finally {
                 setLoading(false);
             }
@@ -78,8 +76,7 @@ const AgencyVerificationForm = () => {
             return;
         }
 
-        if (!formData.nrc || !formData.nrcPhotoFront || !formData.nrcPhotoBack || 
-            !formData.agencyLicenseFront || !formData.agencyLicenseBack) {
+        if (!formData.nrc || !formData.nrcPhotoFront || !formData.nrcPhotoBack) {
             setError('Please fill in all required fields.');
             return;
         }
@@ -90,18 +87,16 @@ const AgencyVerificationForm = () => {
             setSuccess(null);
 
             const formDataToSend = new FormData();
-            const agencyId = Number(authData?.user?.id);
-            if (isNaN(agencyId)) {
-                throw new Error('Invalid agency ID');
+            const customerId = Number(authData?.user?.id);
+            if (isNaN(customerId)) {
+                throw new Error('Invalid customer ID');
             }
-            formDataToSend.append('agencyId', agencyId);
+            formDataToSend.append('customerId', customerId);
             formDataToSend.append('nrc', formData.nrc);
             formDataToSend.append('nrcPhotoFront', formData.nrcPhotoFront);
             formDataToSend.append('nrcPhotoBack', formData.nrcPhotoBack);
-            formDataToSend.append('agencyLicenseFront', formData.agencyLicenseFront);
-            formDataToSend.append('agencyLicenseBack', formData.agencyLicenseBack);
 
-            const response = await axiosInstance.post('/agency/verification/upload', formDataToSend);
+            const response = await axiosInstance.post('/customer/verification/upload', formDataToSend);
             setVerification(response.data);
             setIsVerified(response.data?.verificationStatus === 'VERIFIED');
             setSuccess('Verification data uploaded successfully.');
@@ -109,13 +104,10 @@ const AgencyVerificationForm = () => {
                 ...prev,
                 nrcPhotoFront: null,
                 nrcPhotoBack: null,
-                agencyLicenseFront: null,
-                agencyLicenseBack: null,
             }));
+
             document.getElementById('nrcPhotoFront').value = null;
             document.getElementById('nrcPhotoBack').value = null;
-            document.getElementById('agencyLicenseFront').value = null;
-            document.getElementById('agencyLicenseBack').value = null;
         } catch (error) {
             console.error('Error updating verification:', error);
             setError(error.response?.data?.message || 'Failed to upload verification data.');
@@ -125,8 +117,8 @@ const AgencyVerificationForm = () => {
     };
 
     return (
-        <div className="agency-verification-form">
-            <h2>Agency Verification</h2>
+        <div className="customer-verification-form">
+            <h2>Customer Verification</h2>
             {loading && <p className="alert alert-info">Loading...</p>}
             {error && <p className="alert alert-danger">{error}</p>}
             {success && <p className="alert alert-success">{success}</p>}
@@ -145,18 +137,6 @@ const AgencyVerificationForm = () => {
                         <div>
                             <p><strong>NRC Photo Back:</strong></p>
                             <img src={`data:image/jpeg;base64,${verification.nrcPhotoBack}`} alt="NRC Back" width="150" />
-                        </div>
-                    )}
-                    {verification.agencyLicenseFront && (
-                        <div>
-                            <p><strong>Agency License Front:</strong></p>
-                            <img src={`data:image/jpeg;base64,${verification.agencyLicenseFront}`} alt="License Front" width="150" />
-                        </div>
-                    )}
-                    {verification.agencyLicenseBack && (
-                        <div>
-                            <p><strong>Agency License Back:</strong></p>
-                            <img src={`data:image/jpeg;base64,${verification.agencyLicenseBack}`} alt="License Back" width="150" />
                         </div>
                     )}
                 </div>
@@ -203,32 +183,6 @@ const AgencyVerificationForm = () => {
                             accept="image/*"
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="agencyLicenseFront">Agency License Front:</label>
-                        <input
-                            id="agencyLicenseFront"
-                            type="file"
-                            name="agencyLicenseFront"
-                            onChange={(e) => handleFileChange(e, 'agencyLicenseFront')}
-                            required={!verification?.agencyLicenseFront}
-                            disabled={loading}
-                            className="form-control"
-                            accept="image/*"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="agencyLicenseBack">Agency License Back:</label>
-                        <input
-                            id="agencyLicenseBack"
-                            type="file"
-                            name="agencyLicenseBack"
-                            onChange={(e) => handleFileChange(e, 'agencyLicenseBack')}
-                            required={!verification?.agencyLicenseBack}
-                            disabled={loading}
-                            className="form-control"
-                            accept="image/*"
-                        />
-                    </div>
                     <button
                         type="submit"
                         disabled={loading}
@@ -240,8 +194,8 @@ const AgencyVerificationForm = () => {
             )}
 
             <style jsx>{`
-                .agency-verification-form {
-                    max-width: 600px;
+                .customer-verification-form {
+                    max-width: 500px;
                     margin: 0 auto;
                     padding: 20px;
                     background: #f9f9f9;
@@ -312,10 +266,8 @@ const AgencyVerificationForm = () => {
                     border: none;
                     border-radius: 4px;
                     cursor: pointer;
-                    font-size: 14px;
+                    font-size: 16px;
                     transition: background 0.3s;
-                    
-                   
                 }
 
                 .btn-primary {
@@ -324,7 +276,7 @@ const AgencyVerificationForm = () => {
                 }
 
                 .btn-primary:hover:not(:disabled) {
-                    background:rgb(245, 210, 8);
+                    background:rgb(245, 202, 8);
                     color: black;
                 }
 
@@ -358,4 +310,4 @@ const AgencyVerificationForm = () => {
     );
 };
 
-export default AgencyVerificationForm;
+export default CustomerVerificationForm;

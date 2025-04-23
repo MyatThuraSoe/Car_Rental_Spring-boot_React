@@ -5,12 +5,17 @@
   /* padding: 10px; */
 }
 
+.car-list h1 {
+  border-bottom: #ffd700 2px solid;
+  width: max-content;
+  color: #333;
+}
+
 .car-cards {
   display: grid;
   /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-
 }
 
 .car-cards .car-card {
@@ -39,9 +44,11 @@
 
 .car-info h3 {
   margin: 5px 0;
+  text-decoration: none;
 }
 
 .car-info p {
+  text-decoration: none;
   margin: 0;
   font-size: 14px;
   color: #555;
@@ -55,22 +62,23 @@
   margin-top: 20px;
 }
 
-.pagination button {
+.pagination button.carlist-prev, .pagination button.carlist-next, .pagination button#page-button {
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
   cursor: pointer;
+  color: #333;
 }
 
-.pagination button.active {
+.pagination button#page-button.active {
   background-color: #007bff;
-  color: white;
+  color: white; 
 }
 
-.pagination button:disabled {
+.pagination button.carlist-prev:disabled, .pagination button.carlist-next:disabled {
   background-color: #f0f0f0;
-  color: #ccc;
+  color: #929090;
   cursor: not-allowed;
 }
 

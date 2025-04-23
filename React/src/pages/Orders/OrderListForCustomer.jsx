@@ -82,8 +82,6 @@ const OrderListForCustomer = () => {
                             <th>ID</th>
                             <th>Car Brand</th>
                             <th>Model</th>
-                            <th>Customer ID</th>
-                            <th>Name</th>
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Pick-Up Location</th>
@@ -99,8 +97,6 @@ const OrderListForCustomer = () => {
                                 <td>{order.id}</td>
                                 <td>{order.carBrand}</td>
                                 <td>{order.carModel}</td>
-                                <td>{order.customerId}</td>
-                                <td>{order.customerName || 'N/A'}</td>
                                 <td>{order.startDate ? moment(order.startDate).format('YYYY-MM-DD') : 'N/A'}</td>
                                 <td>{order.endDate ? moment(order.endDate).format('YYYY-MM-DD') : 'N/A'}</td>
                                 <td>{order.pickUpLocation || 'N/A'}</td>
@@ -154,7 +150,7 @@ const OrderListForCustomer = () => {
                         border-bottom: 1px solid #ddd;
                     }
                     th {
-                        background-color: #007bff;
+                        background-color: black;
                         color: white;
                         font-weight: bold;
                     }
@@ -162,7 +158,7 @@ const OrderListForCustomer = () => {
                         background-color: #f1f1f1;
                     }
                     .btn-primary {
-                        background-color: #007bff;
+                        background-color: navy;
                         color: white;
                         border: none;
                         padding: 8px 16px;
