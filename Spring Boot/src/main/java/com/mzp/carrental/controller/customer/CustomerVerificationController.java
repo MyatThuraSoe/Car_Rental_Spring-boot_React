@@ -1,5 +1,6 @@
 package com.mzp.carrental.controller.customer;
 
+import com.mzp.carrental.dto.CustomerVerificationDTO;
 import com.mzp.carrental.entity.Verification.CustomerVerification;
 import com.mzp.carrental.service.Customer.CustomerVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,17 @@ public class CustomerVerificationController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new UploadResponse(false, e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/{customerId}")
+    public ResponseEntity<CustomerVerificationDTO> getCustomerVerification(@PathVariable Integer customerId) {
+        try {
+            CustomerVerificationDTO verification = customerVerificationService.getCustomerVerification(customerId);
+            return ResponseEntity.ok(verification);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomerVerificationDTO(null, null)); // Empty DTO
         }
     }
 }

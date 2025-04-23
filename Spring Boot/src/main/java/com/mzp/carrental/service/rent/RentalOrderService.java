@@ -145,6 +145,8 @@ public class RentalOrderService {
         dto.setCarModel(rentalOrder.getCar().getModel());
         dto.setCarBrand(rentalOrder.getCar().getBrand());
         dto.setCustomerId(rentalOrder.getCustomer().getId());
+        dto.setCustomerName(rentalOrder.getCustomer().getUsername());
+        dto.setCustomerPhoneNumber(rentalOrder.getCustomerPhoneNumber());
         dto.setStartDate(rentalOrder.getStartDate());
         dto.setEndDate(rentalOrder.getEndDate());
         dto.setPickUpLocation(rentalOrder.getPickUpLocation());
@@ -152,6 +154,7 @@ public class RentalOrderService {
         dto.setIncludeDriver(rentalOrder.isIncludeDriver());
         dto.setTotalPrice(rentalOrder.getTotalPrice());
         dto.setOrderDate(rentalOrder.getOrderDate());
+        dto.setCustomerVerificationStatus(rentalOrder.getCustomer().getVerificationStatus().toString());
         return dto;
     }
 

@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/agency/notifications/**").hasAnyAuthority("Agency")
                         .requestMatchers("/customer/notifications/**").hasAnyAuthority("Customer")
                         .requestMatchers("/admin/**", "/admin/verifications/**").hasAuthority("Admin")
-                        .requestMatchers("/agency/**").hasAnyAuthority("Agency")
+                        .requestMatchers("/agency/**").hasAnyAuthority("Agency", "Admin")
                         .requestMatchers("/customer/**, /ratings/cars").hasAnyAuthority("Customer")
                         .requestMatchers("/view/cars/test/**").hasAnyAuthority("User")
                         .requestMatchers("/rent/**").hasAnyAuthority("Agency", "Customer")

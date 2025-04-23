@@ -1,5 +1,6 @@
 package com.mzp.carrental.repository.rent;
 
+import com.mzp.carrental.entity.Cars.Car;
 import com.mzp.carrental.entity.Rent.Rent;
 import com.mzp.carrental.entity.Rent.RentalOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -50,6 +51,14 @@ public interface RentRepo extends JpaRepository<Rent,Long> {
 
     boolean existsByCustomerIdAndCarId(Integer id, Long carId);
 
+
+    @Query("""
+    SELECT r.car FROM Rent r
+    GROUP BY r.car
+    ORDER BY COUNT(r) DESC
+    """)
+    List<Car> findTopRentedCars(Integer numOfCars);
+
     //boolean existsByCarIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndOrderIdNot(Long id, LocalDate endDate, LocalDate startDate, Long id1);
 
 
@@ -63,5 +72,10 @@ public interface RentRepo extends JpaRepository<Rent,Long> {
 //    @Modifying
 //    @Query("DELETE FROM RentalOrder ro WHERE ro.customer.id = :customerId")
 //    void deleteByCustomer(@Param("customerId") Integer customerId);
+
+//    @Query("SELECT SUM(r.totalPrice) FROM Rent r")
+//    double sumTotalRevenue();
+
+
 
 }

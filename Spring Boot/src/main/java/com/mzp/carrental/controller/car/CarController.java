@@ -26,7 +26,7 @@ public class CarController {
 
     @Autowired
     private CarService carService;
-    
+
 
     // Get all cars for the current agency
     @GetMapping
@@ -179,6 +179,17 @@ public class CarController {
         return ResponseEntity.ok(updatedCar);
     }
 
+    @GetMapping("/byId/{id}")
+    public ResponseEntity<List<Car>> getAllCarsByAgencyId(@PathVariable Integer id) {
+        try {
+            List<Car> cars = carService.getAllCarsByAgencyId(id);
+            return cars.isEmpty()
+                    ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                    : ResponseEntity.ok(cars);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
 }

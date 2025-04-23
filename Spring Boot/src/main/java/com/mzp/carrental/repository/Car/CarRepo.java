@@ -1,6 +1,7 @@
 package com.mzp.carrental.repository.Car;
 
 
+import com.mzp.carrental.dto.CarDTO;
 import com.mzp.carrental.entity.Cars.Car;
 import com.mzp.carrental.entity.Users.Agency;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,18 @@ public interface CarRepo extends JpaRepository<Car, Long> {
                             @Param("seats") Integer seats,
                             @Param("category") String category,
                             @Param("fuelType") String fuelType);
+
+    List<Car> findByAgencyId(Long id);
+
+    @Query("""
+    SELECT c FROM Car c
+    ORDER BY c.totalRents DESC
+    """)
+    List<Car> findTopRentedCars(Integer numOfCars);
+
+
+//    @Query(value = "SELECT c.id, CONCAT(c.brand, ' ', c.model), COUNT(r.id) " +
+//            "FROM car c LEFT JOIN rent r ON c.id = r.car_id " +
+//            "GROUP BY c.id ORDER BY COUNT(r.id) DESC LIMIT 10", nativeQuery = true)
+//    List<Object[]> findTop10MostRentedCars();
 }
