@@ -128,15 +128,17 @@ const Navbar = () => {
                 <Dropdown.Toggle
                   variant="light"
                   id="dropdown-basic"
-                  className="dropdown-toggle-custom" style={{borderRadius: '50%'}}
-                ><FontAwesomeIcon icon={faUser} className="user-icon" />
+                  className="dropdown-toggle-custom"
+                  style={{ borderRadius: "50%" }}
+                >
+                  <FontAwesomeIcon icon={faUser} className="user-icon" />
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="dropdown-menu-custom">
                   {authData.role === "Customer" && (
                     <>
-                      <Dropdown.Item className="dropdown-item-profile-name">
-                        {userProfile?.username || "Profile"}
-                      </Dropdown.Item>
+                      {/* <Dropdown.Item className="dropdown-item-profile-name">
+                        {userProfile?.username || "Unknown"}
+                      </Dropdown.Item> */}
                       <Dropdown.Item
                         as={Link}
                         to="/customer/profile"
@@ -173,6 +175,9 @@ const Navbar = () => {
                   )}
                   {authData.role === "Agency" && (
                     <>
+                      {/* <Dropdown.Item className="dropdown-item-profile-name">
+                        {userProfile?.username || "Profile"}
+                      </Dropdown.Item> */}
                       <Dropdown.Item
                         as={Link}
                         to="/agency/profile"
@@ -221,7 +226,6 @@ const Navbar = () => {
                       >
                         Verification
                       </Dropdown.Item>
-                      
                     </>
                   )}
                   {authData.role === "Admin" && (
