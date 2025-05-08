@@ -18,13 +18,25 @@ const RentListForCustomer = () => {
       const rentsWithImages = await Promise.all(
         response.data.map(async (rent) => {
           try {
-            const imageResponse = await axiosInstance.get(`/view/cars/${rent.carId}/image`, {
-              responseType: "blob",
-            });
-            return { ...rent, carImage: URL.createObjectURL(imageResponse.data) };
+            const imageResponse = await axiosInstance.get(
+              `/view/cars/${rent.carId}/image`,
+              {
+                responseType: "blob",
+              }
+            );
+            return {
+              ...rent,
+              carImage: URL.createObjectURL(imageResponse.data),
+            };
           } catch (imageError) {
-            console.error(`Error fetching image for car ${rent.carId}:`, imageError);
-            return { ...rent, carImage: "https://dummyimage.com/400x300/000/fff" };
+            console.error(
+              `Error fetching image for car ${rent.carId}:`,
+              imageError
+            );
+            return {
+              ...rent,
+              carImage: "https://dummyimage.com/400x300/000/fff",
+            };
           }
         })
       );
@@ -39,15 +51,35 @@ const RentListForCustomer = () => {
   const getStyle = (status) => {
     switch (status) {
       case "NOT_STARTED":
-        return { backgroundColor: "#e9ecef", color: "#333", padding: "5px 10px", borderRadius: "4px" }; // Grey for Not Started
+        return {
+          backgroundColor: "#e9ecef",
+          color: "#333",
+          padding: "5px 10px",
+          borderRadius: "4px",
+        }; // Grey for Not Started
       case "ONGOING":
-        return { backgroundColor: "#d4edda", color: "#155724", padding: "5px 10px", borderRadius: "4px" }; // Green for Ongoing
+        return {
+          backgroundColor: "#d4edda",
+          color: "#155724",
+          padding: "5px 10px",
+          borderRadius: "4px",
+        }; // Green for Ongoing
       case "COMPLETED":
-        return { backgroundColor: "#cce5ff", color: "#004085", padding: "5px 10px", borderRadius: "4px" }; // Blue for Completed
+        return {
+          backgroundColor: "#cce5ff",
+          color: "#004085",
+          padding: "5px 10px",
+          borderRadius: "4px",
+        }; // Blue for Completed
       default:
-        return { backgroundColor: "#f8d7da", color: "#721c24", padding: "5px 10px", borderRadius: "4px" }; // Red for Unknown
+        return {
+          backgroundColor: "#f8d7da",
+          color: "#721c24",
+          padding: "5px 10px",
+          borderRadius: "4px",
+        }; // Red for Unknown
     }
-  }
+  };
 
   useEffect(() => {
     fetchRents();
@@ -91,16 +123,25 @@ const RentListForCustomer = () => {
                     src={rent.carImage}
                     alt={`${rent.carBrand} ${rent.carModel}`}
                     className="img-fluid rounded"
-                    style={{ width: "100px", height: "60px", objectFit: "cover" }}
+                    style={{
+                      width: "100px",
+                      height: "60px",
+                      objectFit: "cover",
+                    }}
                   />
                 </td>
-                <td>{rent.carBrand} {rent.carModel}</td>
+                <td>
+                  {rent.carBrand} {rent.carModel}
+                </td>
                 <td>{moment(rent.startDate).format("YYYY-MM-DD")}</td>
                 <td>{moment(rent.endDate).format("YYYY-MM-DD")}</td>
                 <td style={getStyle(rent.rentStatus)}>{rent.rentStatus}</td>
                 <td>${rent.totalPrice?.toFixed(2)}</td>
                 <td>
-                  <button className="btn btn-primary" onClick={() => handleRentClick(rent)}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleRentClick(rent)}
+                  >
                     View Details
                   </button>
                 </td>
@@ -109,7 +150,11 @@ const RentListForCustomer = () => {
           </tbody>
         </table>
       )}
-      <RentDetailsModal show={showModal} handleClose={handleCloseModal} rent={selectedRent} />
+      <RentDetailsModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        rent={selectedRent}
+      />
       {/* Inline Styles */}
       <style>
         {`

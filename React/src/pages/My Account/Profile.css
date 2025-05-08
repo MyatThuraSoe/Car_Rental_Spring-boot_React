@@ -1,4 +1,3 @@
-/* Profile.css */
 .profile-container {
   max-width: 900px;
   margin: 0 auto;
@@ -59,7 +58,8 @@
   font-size: 1.1rem;
   display: flex;
   align-items: center;
-  width: 48%; /* Adjusts width to allow two fields per row */
+  width: 48%;
+  /* Adjusts width to allow two fields per row */
 }
 
 .profile-details strong {
@@ -69,7 +69,7 @@
   margin-right: 10px;
 }
 
-.profile-details a span{
+.profile-details a span {
   display: inline-block;
   margin-top: 1.5rem;
   padding: 10px 20px;
@@ -82,7 +82,7 @@
   transition: background-color 0.3s ease;
 }
 
-.profile-details a span:hover{
+.profile-details a span:hover {
   background-color: #2a5298;
 }
 
@@ -131,6 +131,7 @@
   }
 
   .profile-details div {
-    width: 100%; /* Stacks the fields on smaller screens */
+    width: 100%;
+    /* Stacks the fields on smaller screens */
   }
 }

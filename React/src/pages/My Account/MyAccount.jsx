@@ -100,8 +100,7 @@ const MyAccount = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
-    // Check if all password requirements are met
+  
     if (
       !passwordValidations.hasCapitalLetter ||
       !passwordValidations.hasNumber ||
@@ -112,38 +111,44 @@ const MyAccount = () => {
         "Password must contain at least one capital letter, one number, one special character, and be at least 8 characters long."
       );
     }
-
-    // Log the registered emails and the entered email for debugging
-    console.log("Registered Emails:", registeredEmails);
-    console.log("Entered Email:", accountInfo.email);
-
-    // Check if the email is already registered
+  
     try {
       const response = await axiosInstance.post(`/auth/register`, accountInfo);
-      const { statusCode, message, token, role } = response.data;
-
+      const { statusCode, message } = response.data;
+  
       if (statusCode !== 200) {
         toast.error(`❌ ${message}`);
-        setIsLoggingIn(false);
         return;
       }
+  
+      // ✅ Success: show toast, auto-fill email/password, toggle to login form
       toast.success("Registration successful! Please log in. ✅", {
         duration: 2000,
       });
-      setIsRegistering(false);
-      setEmailError(""); // Clear email error on success
-      navigate("/account");
-      // setTimeout(() => {
-      //   if (accountInfo.role === "Customer") {
-      //     navigate("/customer/login");
-      //   } else if (accountInfo.role === "Agency") {
-      //     navigate("/agency/login");
-      //   }
-      // }, 2000);
+  
+      // Auto-fill login form
+      setAccountInfo((prev) => ({
+        ...prev,
+        email: accountInfo.email,
+        password: accountInfo.password,
+      }));
+  
+      setIsRegistering(false); // Switch to login view
+  
+      // ✅ Prevent execution from continuing into the catch block
+      return;
     } catch (err) {
-      toast.error("Registration failed. Please try again. ❌");
+      console.error("Registration error:", err);
+      let errorMessage = "Registration failed. Please try again. ❌";
+  
+      if (err.response?.data?.message) {
+        errorMessage = `❌ ${err.response.data.message}`;
+      }
+  
+      toast.error(errorMessage);
     }
   };
+  
 
   return (
     <div className="my-account">

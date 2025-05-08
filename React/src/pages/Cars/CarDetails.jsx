@@ -180,7 +180,10 @@ const CarDetails = () => {
   };
 
   return (
-    <div className="car-details-container-custom">
+    <div
+      className="car-details-container-custom"
+      style={{ whiteSpace: "pre-wrap" }}
+    >
       {authData.token ? (
         <>
           <div className="car-images-wrapper">
@@ -308,8 +311,21 @@ const CarDetails = () => {
           {/* own by */}
           <div className="owned-by">
             <h3>Owned by</h3>
-            <p onClick={()=> navigate(`/page/agency/${AgencyData?.id}`)} style={{ cursor: 'pointer', fontSize: '1.2rem', fontWeight: '900', color: '#000'}} >
-              <FaUser /> {AgencyData?.username} {AgencyData?.verificationStatus === "VERIFIED" ? <MdVerified style={{ color: 'navy' }} /> : ""}
+            <p
+              onClick={() => navigate(`/page/agency/${AgencyData?.id}`)}
+              style={{
+                cursor: "pointer",
+                fontSize: "1.2rem",
+                fontWeight: "900",
+                color: "#000",
+              }}
+            >
+              <FaUser /> {AgencyData?.username}{" "}
+              {AgencyData?.verificationStatus === "VERIFIED" ? (
+                <MdVerified style={{ color: "navy" }} />
+              ) : (
+                ""
+              )}
             </p>
             <p>
               <FaPhone /> {AgencyData?.phoneNumber}
@@ -350,7 +366,10 @@ const CarDetails = () => {
 
           {authData.role === "Customer" && (
             <button onClick={handleRent} className="customer-rent-btn">
-              <PiCarProfileFill style={{ marginRight: '1rem', transform: 'scale(1.8)'}}/> Rent This Car
+              <PiCarProfileFill
+                style={{ marginRight: "1rem", transform: "scale(1.8)" }}
+              />{" "}
+              Rent This Car
             </button>
           )}
 

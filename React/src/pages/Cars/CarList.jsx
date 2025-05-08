@@ -48,7 +48,7 @@ const CarList = () => {
     getStoredValue("searchTerm", "")
   );
 
-  const itemsPerPage = 8; // Adjust this value as needed
+  const itemsPerPage = 9; // Adjust this value as needed
   const navigate = useNavigate();
 
   // Fetch cars and images when the component mounts
@@ -57,7 +57,7 @@ const CarList = () => {
       try {
         const data = await fetchAllCars();
         setCars(data);
-        
+
         // Extract unique makes, models, and categories
         const uniqueMakes = [...new Set(data.map((car) => car.brand))];
         const uniqueCategories = [...new Set(data.map((car) => car.category))];
@@ -188,7 +188,7 @@ const CarList = () => {
       setPriceRange((prev) => ({ ...prev, max: value }));
     }
   };
-  
+
   return (
     <>
       <div className="filter-container">

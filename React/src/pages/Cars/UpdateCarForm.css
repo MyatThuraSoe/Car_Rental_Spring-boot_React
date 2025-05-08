@@ -11,12 +11,12 @@
 }
 
 .update-car-form-container h2 {
-    color: #000;
-    font-size: 32px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ffd700;
+  color: #000;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ffd700;
 }
 
 /* Two-Column Layout */
@@ -28,7 +28,8 @@
 }
 
 .update-car-form-column {
-  width: 48%; /* Adjusts the width of each column */
+  width: 48%;
+  /* Adjusts the width of each column */
 }
 
 /* Input Fields and Dropdowns */
@@ -66,7 +67,8 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
-  resize: vertical; /* Allows resizing vertically */
+  resize: vertical;
+  /* Allows resizing vertically */
 }
 
 .update-car-textarea:focus {
@@ -91,11 +93,11 @@
   flex-wrap: wrap;
 }
 
-.update-car-underline{
-    color: #000;
-    border-bottom: 2px solid #ffd700;
-    width: max-content;
-    font-weight: bolder;
+.update-car-underline {
+  color: #000;
+  border-bottom: 2px solid #ffd700;
+  width: max-content;
+  font-weight: bolder;
 }
 
 .update-car-file-input {
@@ -112,7 +114,7 @@
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
-  width: 50%;
+  width: 100%;
   margin-bottom: 10px;
   font-size: 16px;
 }

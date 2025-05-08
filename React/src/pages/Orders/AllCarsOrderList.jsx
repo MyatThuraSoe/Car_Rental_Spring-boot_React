@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import moment from "moment";
 import AllCarsOrderDetailsModal from "./AllCarsOrderDetailsModal";
 import { MdVerified } from "react-icons/md";
+import "./AllCarsOrderList.css";
 
 const AllCarsOrderList = () => {
   const [rentalOrders, setRentalOrders] = useState([]);
@@ -93,66 +94,136 @@ const AllCarsOrderList = () => {
     );
 
   return (
-    <div className="AgencyOrderListContainer">
-      <h2>Rental Orders For All Of Your Cars</h2>
+    <div className="agency-all-cars-orders">
+      <h2 className="agency-all-cars-title" style={{ textAlign: "center" }}>
+        Rental Orders For All Of Your Cars
+      </h2>
       {rentalOrders.length === 0 ? (
         <p>No rental orders found.</p>
       ) : (
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Car Brand</th>
-              <th>Model</th>
-              {/* <th>Customer ID</th> */}
-              <th>Name</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Pick-Up Location</th>
-              <th>Drop-Off Location</th>
-              <th>Total Price</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Traditional Table for Desktop */}
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Car</th>
+                  <th>Name</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Pick-Up Location</th>
+                  <th>Drop-Off Location</th>
+                  <th>Total Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rentalOrders.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.id}</td>
+                    <td>
+                      {order.carBrand} {order.carModel}
+                    </td>
+                    <td>
+                      {order.customerName || "N/A"}{" "}
+                      {order?.customerVerificationStatus == "VERIFIED" ? (
+                        <MdVerified style={{ color: "navy" }} />
+                      ) : (
+                        ""
+                      )}
+                    </td>
+                    <td>
+                      {order.startDate
+                        ? moment(order.startDate).format("YYYY-MM-DD")
+                        : "N/A"}
+                    </td>
+                    <td>
+                      {order.endDate
+                        ? moment(order.endDate).format("YYYY-MM-DD")
+                        : "N/A"}
+                    </td>
+                    <td>{order.pickUpLocation || "N/A"}</td>
+                    <td>{order.dropOffLocation || "N/A"}</td>
+                    <td>
+                      {order.totalPrice
+                        ? `$${order.totalPrice.toFixed(2)}`
+                        : "N/A"}
+                    </td>
+                    <td style={getStatusStyle(order.status)}>
+                      {order.status || "N/A"}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleOrderClick(order)}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile-Friendly Single-Line Layout */}
+          <div className="mobile-order-list">
             {rentalOrders.map((order) => (
-              <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.carBrand}</td>
-                <td>{order.carModel}</td>
-                {/* <td>{order.customerId}</td> */}
-                <td>{order.customerName || "N/A"} {order?.customerVerificationStatus == "VERIFIED" ? <MdVerified style={{color:'navy'}}/> : ''}</td>
-                <td>
+              <div key={order.id} className="order-item">
+                <div className="order-field">ID: {order.id}</div>
+                <div className="order-field">
+                  Car: {order.carBrand} {order.carModel}
+                </div>
+                <div className="order-field">
+                  Name: {order.customerName || "N/A"}{" "}
+                  {order?.customerVerificationStatus == "VERIFIED" ? (
+                    <MdVerified style={{ color: "navy" }} />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="order-field">
+                  Start Date:{" "}
                   {order.startDate
                     ? moment(order.startDate).format("YYYY-MM-DD")
                     : "N/A"}
-                </td>
-                <td>
+                </div>
+                <div className="order-field">
+                  End Date:{" "}
                   {order.endDate
                     ? moment(order.endDate).format("YYYY-MM-DD")
                     : "N/A"}
-                </td>
-                <td>{order.pickUpLocation || "N/A"}</td>
-                <td>{order.dropOffLocation || "N/A"}</td>
-                <td>
+                </div>
+                <div className="order-field">
+                  Pick-Up Location: {order.pickUpLocation || "N/A"}
+                </div>
+                <div className="order-field">
+                  Drop-Off Location: {order.dropOffLocation || "N/A"}
+                </div>
+                <div className="order-field">
+                  Total Price:{" "}
                   {order.totalPrice ? `$${order.totalPrice.toFixed(2)}` : "N/A"}
-                </td>
-                <td style={getStatusStyle(order.status)}>
-                  {order.status || "N/A"}
-                </td>
-                <td>
+                </div>
+                <div
+                  className="order-field status-field"
+                  style={getStatusStyle(order.status)}
+                >
+                  Status: {order.status || "N/A"}
+                </div>
+                <div className="order-actions">
                   <button
                     className="btn btn-primary"
                     onClick={() => handleOrderClick(order)}
                   >
                     View Details
                   </button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </>
       )}
       <AllCarsOrderDetailsModal
         show={showModal}
@@ -161,61 +232,6 @@ const AllCarsOrderList = () => {
         onApprove={handleApproveOrder}
         onDeny={handleDenyOrder}
       />
-      {/* Inline Styles */}
-      <style>
-        {`
-                    .AgencyOrderListContainer {
-                        padding: 20px;
-                        background-color: #f9f9f9;
-                        border-radius: 8px;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                        margin: 20px;
-                        min-height: 50vh;
-                    }
-                    h2 {
-                        color: #333;
-                        text-align: center;
-                        margin-bottom: 20px;
-                    }
-                    table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-bottom: 20px;
-                        background-color: #fff;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    }
-                    th, td {
-                        padding: 12px 15px;
-                        text-align: left;
-                        border-bottom: 1px solid #ddd;
-                    }
-                    th {
-                        background-color: black;
-                        color: white;
-                        font-weight: bold;
-                    }
-                    tr:hover {
-                        background-color: #f1f1f1;
-                    }
-                    .btn-primary {
-                        background-color: navy;
-                        color: white;
-                        border: none;
-                        padding: 8px 16px;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        transition: background-color 0.3s ease;
-                    }
-                    .btn-primary:hover {
-                        background-color:rgb(0, 46, 92);
-                    }
-                    p {
-                        text-align: center;
-                        color: #6c757d;
-                        font-size: 18px;
-                    }
-                `}
-      </style>
     </div>
   );
 };

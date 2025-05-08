@@ -92,7 +92,7 @@ const Profile = () => {
             <FaMoneyBillTrendUp /> <strong>Total Revenue:</strong>{" "}
             {details.totalRevenue || "0"}$
           </div>
-          <Link to="/agency/profile-update" className="btn btn-primary">
+          <Link to="/agency/profile-update" className="agency-update-btn">
             <span>Update Profile</span>
           </Link>
         </>
@@ -111,7 +111,7 @@ const Profile = () => {
             <FaMoneyBillTrendUp /> <strong>Total Spending:</strong>{" "}
             {details.totalSpending || "0"}$
           </div>
-          <Link to="/customer/profile-update" className="btn btn-primary">
+          <Link to="/customer/profile-update" className="customer-update-btn">
             <span>Update Profile</span>
           </Link>
         </>
