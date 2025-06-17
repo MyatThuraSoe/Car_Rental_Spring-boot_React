@@ -13,7 +13,8 @@ src="https://visitor-badge.laobi.icu/badge?page_id=Car_Rental_Spring-boot_React"
 
 ### 🔧 Dashboard View
 
-![Dashboard](https://github.com/user-attachments/assets/b0774ad8-27b6-406c-bb35-40abe519310a)
+![Dashboard](https://github.com/user-attachments/assets/3509ee9e-9057-404d-8da2-853cfc8ae351)
+
 
 ### 🌐 Home Page
 
